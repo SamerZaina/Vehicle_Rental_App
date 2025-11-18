@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # vehicle_rental_app
 
 A new Flutter project.
@@ -14,3 +15,7 @@ A few resources to get you started if this is your first Flutter project:
 For help getting started with Flutter development, view the
 [online documentation](https://docs.flutter.dev/), which offers tutorials,
 samples, guidance on mobile development, and a full API reference.
+=======
+# Vehicle_Rental_App
+Mobile Flutter Project 
+>>>>>>> f4163b553249f7343f205b5404f4d71c151fc0b0
