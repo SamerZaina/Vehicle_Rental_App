@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:vehicle_rental_app/screens/login/forget_password.dart';
 import 'package:vehicle_rental_app/utils/constants/colors.dart';
 
 import 'custom_themes/bottom_sheet_theme.dart';
@@ -7,8 +8,8 @@ import 'custom_themes/chip_theme.dart';
 import 'custom_themes/text_theme.dart';
 
 
-class VAppTheme{
-  VAppTheme._();
+class RAppTheme{
+  RAppTheme._();
 
   static ThemeData LightTheme = ThemeData(
     fontFamily:'Tajawal' ,
@@ -26,8 +27,6 @@ class VAppTheme{
     checkboxTheme: RCheckboxTheme.lightCheckboxTheme,
     bottomSheetTheme:RBottomSheetTheme.lightBottomSheetTheme,
     // inputDecorationTheme: TTextFormFieldTheme.lightInputDecorationTheme,
-
-
   );
   static ThemeData DarkTheme = ThemeData(
     fontFamily:'Tajawal' ,

@@ -1,6 +1,6 @@
 import 'dart:ffi';
 
-class VValidator {
+class RValidator {
   // Empty Text Validation
   static String? validateEmptyText(String? fieldName , String? value){
     if (value == null || value.isEmpty) {
@@ -47,12 +47,12 @@ class VValidator {
   //Empty Email
   static String? validateEmail(String? value) {
     if (value == null || value.isEmpty) {
-      return 'Email is required.';
+      return 'البريد الالكتروني مطلوب.';
     }
     // Regular expression for email validation
     final emailRegExp = RegExp(r'^[\w\.-]+@([\w\-]+\.)+[\w\-]{2,4}$');
     if(!emailRegExp.hasMatch(value)){
-      return 'Invalid email address';
+      return 'البريد الالكتروني خاطئ.';
     }
     return null;
   }
@@ -68,29 +68,29 @@ class VValidator {
   }
   static String? validateFullName(String? value) {
     if (value == null || value.isEmpty) {
-      return 'full name is required.';
+      return 'الاسم كامل مطلوب.';
     }
     if (value.length < 3) {
-      return 'full name must be at least 3 characters' ;
+      return 'يجب ان يكون اكثر من ثلاثة حروف.' ;
     }
     return null;
   }
   static String? validatePassword(String? value){
     if (value == null || value.isEmpty) {
-      return 'Password is required';
+      return 'كلمة المرور مطلوبة.';
     }
     // check for minimum password length
     if(value.length <6){
-      return 'Password must be at least 6 characters';
+      return 'يجب ان لا تكون كلمة المرور أقل من 6 حروف.';
     }
     // Check for uppercase letters
     if (!value.contains(RegExp(r'[A-Z]'))) {
-      return 'Password must contain at least one uppercase letter.';
+      return 'يجب ان تحتوي كلمة المرور حروف كبيرة.';
     }
 
     // Check for numbers
     if (!value.contains(RegExp(r'[0-9]'))) {
-      return 'Password must contain at least one number.';
+      return 'يجب ان تحتوى رقم على الأفل.';
     }
     return null;
   }
@@ -135,7 +135,7 @@ class VValidator {
       return null; // QA
     }
 
-    return 'Please enter a valid phone number';
+    return 'يرجى ادخال رقم هاتف صحيح.';
   }
   // validate gender
   static String? validateGender(String? value) {

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:vehicle_rental_app/screens/on_boarding/onBoarding.dart';
 import 'package:vehicle_rental_app/utils/theme/theme.dart';
 import 'package:vehicle_rental_app/utils/theme/theme_manager.dart';
@@ -19,7 +20,7 @@ class App extends StatelessWidget {
           splitScreenMode: true,
           child: Directionality(
             textDirection: TextDirection.rtl,
-            child: MaterialApp(
+            child: GetMaterialApp(
                 localizationsDelegates: const [
                   GlobalMaterialLocalizations.delegate,
                   GlobalWidgetsLocalizations.delegate,
@@ -29,8 +30,8 @@ class App extends StatelessWidget {
               supportedLocales: [
                 Locale("ar", "AE")],
               debugShowCheckedModeBanner: false,
-              theme: VAppTheme.LightTheme,
-              darkTheme: VAppTheme.DarkTheme,
+              theme: RAppTheme.LightTheme,
+              darkTheme: RAppTheme.DarkTheme,
               themeMode: themeMode,
               home: Onboarding()
             ),
