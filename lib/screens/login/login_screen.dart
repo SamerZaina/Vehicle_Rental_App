@@ -2,7 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:vehicle_rental_app/screens/agency_bottom_navigation_item/bottom_navigation.dart';
 import 'package:vehicle_rental_app/screens/bottom_navigation_items/home_screen.dart';
+import 'package:vehicle_rental_app/screens/bottom_navigation_items/profile_screen.dart';
 import 'package:vehicle_rental_app/screens/login/forget_password.dart';
 import 'package:vehicle_rental_app/screens/register/register_screen.dart';
 import 'package:vehicle_rental_app/utils/constants/colors.dart';
@@ -147,7 +149,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         LoginSignButton(title: RTexts.loginBtn, onPressed: () {
-                          Get.to(Home());
+                          Get.to(Profile());
                         }),
                         SizedBox(height: RSizes.spaceBtwItems),
                         SecondButton(title: RTexts.signupBtn, onPressed: () {
