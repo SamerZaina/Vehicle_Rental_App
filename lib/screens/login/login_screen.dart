@@ -149,7 +149,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         LoginSignButton(title: RTexts.loginBtn, onPressed: () {
-                          Get.to(Profile());
+                          Get.to(BottomNavigation());
                         }),
                         SizedBox(height: RSizes.spaceBtwItems),
                         SecondButton(title: RTexts.signupBtn, onPressed: () {

@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:vehicle_rental_app/screens/agency_bottom_navigation_item/edit_agency_profile.dart';
 import 'package:vehicle_rental_app/screens/bottom_navigation_items/edit_profile_screen.dart';
 import 'package:vehicle_rental_app/screens/login/login_screen.dart';
 import 'package:vehicle_rental_app/utils/constants/colors.dart';
+
+import '../../utils/refactor_widget/logout_dialog.dart';
 
 class AgencyProfile extends StatefulWidget {
   const AgencyProfile({super.key});
@@ -65,7 +68,7 @@ class _AgencyProfileState extends State<AgencyProfile> {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (_) => const EditProfile()),
+                    MaterialPageRoute(builder: (_) => const EditAgencyProfile()),
                   );
                 },
               ),
@@ -140,7 +143,7 @@ class _AgencyProfileState extends State<AgencyProfile> {
                   "تسجيل الخروج",
                   style: TextStyle(fontSize: 18),
                 ),
-                onPressed: () => _showLogoutDialog(context),
+                onPressed: () => showLogoutDialog(context),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: RColors.error,
                   foregroundColor: RColors.white,
@@ -211,61 +214,5 @@ class _AgencyProfileState extends State<AgencyProfile> {
     );
   }
 
-  void _showLogoutDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext dialogContext) {
-        return AlertDialog(
-          backgroundColor: RColors.white,
-          title: Text(
-            "تسجيل الخروج",
-            style: TextStyle(
-              color: RColors.textPrimary,
-              fontWeight: FontWeight.bold,
-              fontSize: 18,
-            ),
-          ),
-          content: Text(
-            "هل أنت متأكد أنك تريد تسجيل الخروج؟",
-            style: TextStyle(
-              color: RColors.textSecondary,
-              fontSize: 16,
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(dialogContext).pop();
-              },
-              child: Text(
-                "لا",
-                style: TextStyle(
-                  color: kIconColor,
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.of(dialogContext).pop();
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (_) => const LoginScreen()),
-                );
-              },
-              child: Text(
-                "نعم",
-                style: TextStyle(
-                  color: RColors.primary,
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-          ],
-        );
-      },
-    );
-  }
+
 }

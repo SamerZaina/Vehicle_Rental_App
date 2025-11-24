@@ -3,6 +3,7 @@ import 'package:vehicle_rental_app/screens/bottom_navigation_items/edit_profile_
 import 'package:vehicle_rental_app/screens/login/login_screen.dart';
 import 'package:vehicle_rental_app/utils/constants/colors.dart';
 
+import '../../utils/refactor_widget/logout_dialog.dart';
 import '../../utils/refactor_widget/profile_avatar.dart';
 
 class Profile extends StatefulWidget {
@@ -129,7 +130,7 @@ class _ProfileState extends State<Profile> {
                   "تسجيل الخروج",
                   style: TextStyle(fontSize: 18),
                 ),
-                onPressed: () => _showLogoutDialog(context),
+                onPressed: () => showLogoutDialog(context),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: RColors.error,
                   foregroundColor: RColors.white,
@@ -202,63 +203,7 @@ class _ProfileState extends State<Profile> {
   }
 
   // ---------- Styled Logout Confirmation Dialog ----------
-  void _showLogoutDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext dialogContext) {
-        return AlertDialog(
-          backgroundColor: RColors.white, // dialog background
-          title: Text(
-            "تسجيل الخروج",
-            style: TextStyle(
-              color: RColors.textPrimary,
-              fontWeight: FontWeight.bold,
-              fontSize: 18,
-            ),
-          ),
-          content: Text(
-            "هل أنت متأكد من تسجيل الخروج؟",
-            style: TextStyle(
-              color: RColors.textSecondary,
-              fontSize: 16,
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(dialogContext).pop(); // Close dialog
-              },
-              child: Text(
-                "لا",
-                style: TextStyle(
-                  color: kIconColor,
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.of(dialogContext).pop(); // Close dialog
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (_) => const LoginScreen()),
-                );
-              },
-              child: Text(
-                "نعم",
-                style: TextStyle(
-                  color: RColors.primary,
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-          ],
-        );
-      },
-    );
-  }
+
 }
 
 
