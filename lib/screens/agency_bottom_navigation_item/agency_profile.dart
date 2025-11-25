@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:vehicle_rental_app/screens/agency_bottom_navigation_item/edit_agency_profile.dart';
-import 'package:vehicle_rental_app/screens/bottom_navigation_items/edit_profile_screen.dart';
+import 'package:vehicle_rental_app/screens/bottom_navigation_items/profile/edit_profile_screen.dart';
 import 'package:vehicle_rental_app/screens/login/login_screen.dart';
 import 'package:vehicle_rental_app/utils/constants/colors.dart';
 

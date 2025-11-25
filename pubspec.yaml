@@ -41,6 +41,7 @@ dependencies:
   flutter_screenutil: ^5.9.3
   google_fonts: ^6.3.2
   smooth_page_indicator: ^1.2.1
+  iconsax_flutter: ^1.0.1
 
 
 
@@ -73,6 +74,7 @@ flutter:
      - assets/images/
      - assets/images/onboarding/
      - assets/images/icons/
+     - assets/images/cars/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

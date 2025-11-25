@@ -123,32 +123,3 @@ class ForgetPassword extends StatelessWidget {
     );
   }
 }
-
-class RAppbar extends StatelessWidget {
-  const RAppbar({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final dark = RHelperFunctions.isDarkMode(context);
-    return AppBar(
-      backgroundColor: dark ?RColors.blackF :RColors.primaryBackground,
-      scrolledUnderElevation: 0,
-      leading:  Container(
-        margin: EdgeInsets.fromLTRB(0, 15, 15, 0),
-        width: 40.w,
-        height: 40.h,
-        decoration: BoxDecoration(
-          color: RColors.primary40,
-          borderRadius: BorderRadius.circular(30.r),
-        ),
-        child: Icon(
-          CupertinoIcons.car_detailed,
-          color: dark ? RColors.dark : RColors.primaryBackground,
-          size: 30.sp,
-        ),
-      ),
-    );
-  }
-}

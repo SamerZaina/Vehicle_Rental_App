@@ -1,10 +1,16 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:vehicle_rental_app/screens/bottom_navigation_items/edit_profile_screen.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:vehicle_rental_app/screens/bottom_navigation_items/profile/edit_profile_screen.dart';
 import 'package:vehicle_rental_app/screens/login/login_screen.dart';
 import 'package:vehicle_rental_app/utils/constants/colors.dart';
+import 'package:vehicle_rental_app/utils/helpers/helper_functions.dart';
 
-import '../../utils/refactor_widget/logout_dialog.dart';
-import '../../utils/refactor_widget/profile_avatar.dart';
+import '../../../utils/refactor_widget/logout_dialog.dart';
+import '../../../utils/refactor_widget/profile_avatar.dart';
+import '../../../widgets/RAppbar.dart';
 
 class Profile extends StatefulWidget {
   const Profile({super.key});
@@ -21,71 +27,92 @@ class _ProfileState extends State<Profile> {
 
   @override
   Widget build(BuildContext context) {
+    final dark = RHelperFunctions.isDarkMode(context);
     return Scaffold(
-      backgroundColor: RColors.white,
-
-      appBar: AppBar(
-        backgroundColor: RColors.white,
-        elevation: 0,
-        title: const Text(
-          "الملف الشخصي",
-          style: TextStyle(
-            color: Color(0xFF000000),
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        centerTitle: true,
-
-        leading: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Container(
+      appBar: dark ?RAppbarTheme.darkAppBarTheme(
+          leadingWidth: 62.w,
+          leading: Container(
             decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              border: Border.all(color: kIconColor),
+                borderRadius: BorderRadius.circular(50),
+                border: BoxBorder.all(
+                    width: 1.w ,
+                    color: RColors.grey
+                )
             ),
+            margin: EdgeInsets.fromLTRB(0, 0, 5, 0),
             child: IconButton(
-              icon: const Icon(
-                Icons.arrow_back_ios_outlined,
-                size: 20,
-                color: Colors.black,
-              ),
-              onPressed: () {},
+              onPressed: (){},
+              color: RColors.darkerGrey, icon:Icon( CupertinoIcons.left_chevron),
             ),
-          ),
-        ),
-
-        actions: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Container(
+          ) ,
+          title: Text('الملف الشخصي' ,
+            style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                fontWeight: FontWeight.bold
+            ),),
+          actions: [
+            Container(
+              width: 40.w,
+              height: 40.h,
               decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                border: Border.all(color: kIconColor),
+                  borderRadius: BorderRadius.circular(50),
+                  border: BoxBorder.all(
+                      width: 1.w ,
+                      color: RColors.grey
+                  )
               ),
+              margin: EdgeInsets.fromLTRB(15, 0, 0, 0),
               child: IconButton(
-                icon: const Icon(
-                  Icons.edit_outlined,
-                  size: 22,
-                  color: Colors.black,
+                onPressed:()=> Get.to(EditProfile()) ,
+                color: RColors.darkerGrey, icon:Icon( Icons.edit,),
+              ),
+            ) ,
+          ]
+      ) : RAppbarTheme.lightAppBarTheme(
+          leadingWidth: 62.w,
+          leading: Container(
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(50),
+                border: BoxBorder.all(
+                    width: 1.w ,
+                    color: RColors.grey
+                )
+            ),
+            margin: EdgeInsets.fromLTRB(0, 0, 5, 0),
+            child: IconButton(
+              onPressed: (){},
+              color: RColors.darkerGrey, icon:Icon( CupertinoIcons.left_chevron),
+            ),
+          ) ,
+          title: Text('الملف الشخصي' ,
+            style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                fontSize:20.sp,
+                fontWeight: FontWeight.bold
+            ),),
+          actions: [
+            Padding(
+              padding: const EdgeInsets.all(9.0),
+              child: Container(
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(color: RColors.darkGrey),
                 ),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (_) => const EditProfile()),
-                  );
-                },
+                child: IconButton(
+                  icon:  Icon(
+                  Icons.edit,
+                    size: 20,
+                    color: Colors.grey,
+                  ),
+                  onPressed:()=> Get.to(EditProfile()) ,
+                ),
               ),
             ),
-          ),
-        ],
-      ),
-
+          ]
+      ) ,
       body: SafeArea(
         child: ListView(
           padding: const EdgeInsets.symmetric(horizontal: 20),
           children: [
             const SizedBox(height: 20),
-
             ProfileAvatar(kIconColor: kIconColor
               , icon: Icons.camera_alt_outlined,
               imagePath: "assets/images/women.png",
@@ -123,7 +150,7 @@ class _ProfileState extends State<Profile> {
             const SizedBox(height: 40),
 
             SizedBox(
-              width: double.infinity,
+              width:150,
               child: ElevatedButton.icon(
                 icon: const Icon(Icons.logout_outlined),
                 label: const Text(
@@ -134,9 +161,9 @@ class _ProfileState extends State<Profile> {
                 style: ElevatedButton.styleFrom(
                   backgroundColor: RColors.error,
                   foregroundColor: RColors.white,
-                  padding: const EdgeInsets.symmetric(vertical: 14),
+                  padding:  EdgeInsets.zero,
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(30.r),
                   ),
                 ),
               ),
@@ -201,8 +228,6 @@ class _ProfileState extends State<Profile> {
       color: RColors.borderPrimary,
     );
   }
-
-  // ---------- Styled Logout Confirmation Dialog ----------
 
 }
 
