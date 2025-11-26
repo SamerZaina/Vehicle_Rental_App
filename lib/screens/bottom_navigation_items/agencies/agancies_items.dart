@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
+import 'package:vehicle_rental_app/screens/bottom_navigation_items/details/details_page.dart';
 import 'package:vehicle_rental_app/utils/helpers/helper_functions.dart';
 
 import '../../../utils/constants/colors.dart';
@@ -216,16 +217,19 @@ class _AganciesItemsState extends State<AganciesItems> {
               padding: const EdgeInsets.symmetric(horizontal:10),
               itemBuilder: (context, index) {
                 final car = cars[index];
-                return  SizedBox(
-                    height: 280.h,
-                    child: CarCardBookButton(
-                  image: car["image"]??'',
-                  name: car["name"]??'',
-                  rating: car["rating"]??'',
-                  location: car["location"]??'',
-                  seats: car["seats"]??'',
-                  price: car["price"]??'',
-                ), );
+                return  GestureDetector(
+                  onTap: ()=> Get.to(DetailsPage()),
+                  child: SizedBox(
+                      height: 280.h,
+                      child: CarCardBookButton(
+                    image: car["image"]??'',
+                    name: car["name"]??'',
+                    rating: car["rating"]??'',
+                    location: car["location"]??'',
+                    seats: car["seats"]??'',
+                    price: car["price"]??'',
+                  ), ),
+                );
               },
 
             ),

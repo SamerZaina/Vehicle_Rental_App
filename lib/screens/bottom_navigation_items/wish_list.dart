@@ -8,6 +8,7 @@ import 'package:vehicle_rental_app/widgets/RAppbar.dart';
 import '../../utils/constants/colors.dart';
 import '../../utils/constants/image_strings.dart';
 import '../../utils/helpers/helper_functions.dart';
+import '../../widgets/favourite_icon.dart';
 import 'agencies/agancies_items.dart';
 
 class WishList extends StatefulWidget {
@@ -85,114 +86,125 @@ class _WishListState extends State<WishList> {
                         width:350.w,
                         height: 180.h,
                         margin: EdgeInsets.fromLTRB(12,5, 0, 0),
-                        child: Card(
-                          elevation: 1.5,
-                          shadowColor: RColors.primary40,
-                          color: dark? RColors.black :RColors.white,
-                          shape: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(20),
-                              borderSide: BorderSide(
-                                width: 1.2.w,
-                                color: dark ?RColors.primary40: RColors.grey,
-                              )
-                          ),
-                          child: Column(
-                            children: [
-                              Row(
+                       child: Card(
+                              elevation: 1.5,
+                              shadowColor: RColors.primary40,
+                              color: dark? RColors.black :RColors.white,
+                              shape: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(20),
+                                  borderSide: BorderSide(
+                                    width: 1.2.w,
+                                    color: dark ?RColors.primary40: RColors.grey,
+                                  )
+                              ),
+                              child: Column(
                                 children: [
-                                  Container(
-                                    margin: EdgeInsets.fromLTRB(0, 15,10,0) ,
-                                    child: GestureDetector(
-                                      onTap: ()=> Get.to(AganciesItems()),
-                                      child: Card(
-                                        shadowColor: RColors.primary,
-                                        color:dark ? RColors.darkGrey : Colors.grey,
-                                        elevation: 2,
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(20.r),
-                                          side: BorderSide(
-                                              color: RColors.primary70
-                                          ),
-                                        ),
-                                        child: Padding(
-                                          padding: EdgeInsets.all(5.w.h),
-                                          child: ClipRRect(
-                                            borderRadius: BorderRadius.circular(20.r),
-                                            child: Image.asset(
-                                              RImages.car2,
-                                              width: 120.w,
-                                              height: 120.h,
-                                              fit: BoxFit.cover,
+                                  Row(
+                                    children: [
+                                      Container(
+                                        margin: EdgeInsets.fromLTRB(0, 15,10,0) ,
+                                        child: GestureDetector(
+                                          onTap: ()=> Get.to(AganciesItems()),
+                                          child: Card(
+                                            shadowColor: RColors.primary,
+                                            color:dark ? RColors.darkGrey : Colors.grey,
+                                            elevation: 2,
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.circular(20.r),
+                                              side: BorderSide(
+                                                  color: RColors.primary70
+                                              ),
+                                            ),
+                                            child: Stack(
+                                              children: [
+                                                Positioned(
+                                                    right: 10,
+                                                    top: 10,
+                                                    child:
+                                                    FavouriteIcon(icon: CupertinoIcons.heart, height: 25.h, width: 25.w ,size: 12.sp,)
+                                                ),
+                                                Padding(
+                                                  padding: EdgeInsets.all(5.w.h),
+                                                  child: ClipRRect(
+                                                    borderRadius: BorderRadius.circular(20.r),
+                                                    child: Image.asset(
+                                                      RImages.car2,
+                                                      width: 120.w,
+                                                      height: 120.h,
+                                                      fit: BoxFit.cover,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
                                             ),
                                           ),
                                         ),
                                       ),
-                                    ),
-                                  ),
-                                  SizedBox(width: 5.w),
-                                  Expanded(
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                            'اسم المركبة' ,
-                                            style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                                                fontWeight: FontWeight.bold
-                                            )
-                                        ),
-                                        SizedBox(height: 4.h),
-                                        Row(
+                                      SizedBox(width: 5.w),
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
-                                            Icon(CupertinoIcons.placemark ),
-
                                             Text(
-                                              'مكان المركبة',
-                                              style: TextStyle(
-                                                fontWeight: FontWeight.w400,
-                                                fontSize: 16.sp,
-                                              ),
+                                                'اسم المركبة' ,
+                                                style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                                                    fontWeight: FontWeight.bold
+                                                )
+                                            ),
+                                            SizedBox(height: 4.h),
+                                            Row(
+                                              children: [
+                                                Icon(CupertinoIcons.placemark ),
 
+                                                Text(
+                                                  'مكان المركبة',
+                                                  style: TextStyle(
+                                                    fontWeight: FontWeight.w400,
+                                                    fontSize: 16.sp,
+                                                  ),
+
+                                                ),
+                                              ],
+                                            ),
+                                            Row(
+                                              children: [
+                                                Icon(CupertinoIcons.money_dollar ),
+                                                Text(
+                                                  'السعر',
+                                                  style: TextStyle(
+                                                    fontWeight: FontWeight.w400,
+                                                    fontSize: 16.sp,
+                                                  ),
+
+                                                ),
+                                              ],
                                             ),
                                           ],
                                         ),
-                                        Row(
-                                          children: [
-                                            Icon(CupertinoIcons.money_dollar ),
-                                            Text(
-                                              'السعر',
-                                              style: TextStyle(
-                                                fontWeight: FontWeight.w400,
-                                                fontSize: 16.sp,
-                                              ),
-
+                                      ),
+                                      Container(
+                                        margin: EdgeInsets.fromLTRB(15, 5, 0, 0),
+                                        width: 100.w,
+                                        height: 45.h,
+                                        child: ElevatedButton(
+                                            style: ElevatedButton.styleFrom(
+                                                backgroundColor: RColors.primary,
+                                                padding: EdgeInsets.zero
                                             ),
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  Container(
-                                    margin: EdgeInsets.fromLTRB(15, 5, 0, 0),
-                                    width: 100.w,
-                                    height: 45.h,
-                                    child: ElevatedButton(
-                                        style: ElevatedButton.styleFrom(
-                                            backgroundColor: RColors.primary,
-                                            padding: EdgeInsets.zero
-                                        ),
-                                        onPressed: (){},
-                                        child: Text('احجز الآن',
-                                          style: TextStyle(
-                                              color: RColors.white ,
-                                              fontSize: 12.sp,
-                                              fontWeight: FontWeight.bold
-                                          ),)),
+                                            onPressed: (){},
+                                            child: Text('احجز الآن',
+                                              style: TextStyle(
+                                                  color: RColors.white ,
+                                                  fontSize: 12.sp,
+                                                  fontWeight: FontWeight.bold
+                                              ),)),
+                                      )
+                                    ],
                                   )
                                 ],
-                              )
-                            ],
-                          ),
-                        ),
+                              ),
+                            ),
+
                       );}
 
 
