@@ -5,6 +5,7 @@ import 'package:vehicle_rental_app/screens/bottom_navigation_items/details/booki
 import 'package:vehicle_rental_app/screens/bottom_navigation_items/details/details_page.dart';
 import 'package:vehicle_rental_app/screens/bottom_navigation_items/home_screen.dart';
 import 'package:vehicle_rental_app/screens/bottom_navigation_items/profile/edit_profile_screen.dart';
+import 'package:vehicle_rental_app/screens/login/login_screen.dart';
 import 'package:vehicle_rental_app/screens/on_boarding/onBoarding.dart';
 import 'package:vehicle_rental_app/utils/theme/theme.dart';
 import 'package:vehicle_rental_app/utils/theme/theme_manager.dart';
@@ -38,7 +39,7 @@ class App extends StatelessWidget {
               theme: RAppTheme.LightTheme,
               darkTheme: RAppTheme.DarkTheme,
               themeMode: themeMode,
-              home: BookingDetails()
+              home: Onboarding()
             ),
           ),
         );

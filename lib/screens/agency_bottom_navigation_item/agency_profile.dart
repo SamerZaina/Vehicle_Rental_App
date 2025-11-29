@@ -1,10 +1,11 @@
+import 'package:flutter/cupertino.dart' show CupertinoIcons;
 import 'package:flutter/material.dart';
-import 'package:vehicle_rental_app/screens/agency_bottom_navigation_item/edit_agency_profile.dart';
-import 'package:vehicle_rental_app/screens/bottom_navigation_items/profile/edit_profile_screen.dart';
-import 'package:vehicle_rental_app/screens/login/login_screen.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:vehicle_rental_app/utils/constants/colors.dart';
-
+import 'package:vehicle_rental_app/utils/refactor_widget/profile_main_info_card.dart';
 import '../../utils/refactor_widget/logout_dialog.dart';
+import '../../utils/refactor_widget/profile_avatar.dart';
+import 'edit_agency_profile.dart';
 
 class AgencyProfile extends StatefulWidget {
   const AgencyProfile({super.key});
@@ -16,203 +17,145 @@ class AgencyProfile extends StatefulWidget {
 class _AgencyProfileState extends State<AgencyProfile> {
   static const Color kIconColor = Color(0xFF767676);
 
-  // Status variable
-  bool status = false;
+  // Sample data (you can later replace with API data)
+  String agencyName = "اسم الوكالة";
+  String agencyEmail = "agency@example.com";
+  String agencyPhone = "+970 599 123 456";
+  String agencyLicense = "A123456789";
+  String imagePath = "assets/images/agency_brand.jpg";
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: RColors.white,
-      appBar: AppBar(
-        backgroundColor: RColors.white,
-        elevation: 0,
-        title: const Text(
-          "الملف الشخصي للوكالة",
-          style: TextStyle(
-            color: Color(0xFF000000),
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        centerTitle: true,
-        leading: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Container(
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              border: Border.all(color: kIconColor),
-            ),
-            child: IconButton(
-              icon: const Icon(
-                Icons.arrow_back_ios_outlined,
-                size: 20,
-                color: Colors.black,
-              ),
-              onPressed: () {},
-            ),
-          ),
-        ),
-        actions: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Container(
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                border: Border.all(color: kIconColor),
-              ),
-              child: IconButton(
-                icon: const Icon(
-                  Icons.edit_outlined,
-                  size: 22,
-                  color: Colors.black,
-                ),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (_) => const EditAgencyProfile()),
-                  );
-                },
-              ),
-            ),
-          ),
-        ],
-      ),
-      body: SafeArea(
-        child: ListView(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
-          children: [
-            const SizedBox(height: 20),
-            Center(
-              child: Stack(
-                children: [
-                  const CircleAvatar(
-                    radius: 60,
-                    backgroundImage: AssetImage("assets/images/agency.png"),
+    return SafeArea(
+      child: ListView(
+        padding: EdgeInsets.symmetric(horizontal: 20.w),
+        children: [
+          SizedBox(height: 20.h),
+
+          // ---------------------- ROW: Edit + Avatar ----------------------
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // EDIT BUTTON
+              Container(
+                width: 58.w,
+                height: 58.w,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(30.r),
+                  color: RColors.white,
+                  border: Border.all(
+                    width: 1.w,
+                    color: RColors.grey,
                   ),
-                  Positioned(
-                    bottom: 0,
-                    right: 0,
-                    child: GestureDetector(
-                      onTap: () {},
-                      child: Container(
-                        padding: const EdgeInsets.all(6),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          shape: BoxShape.circle,
-                          border: Border.all(color: kIconColor, width: 1.6),
-                        ),
-                        child: const Icon(
-                          Icons.camera_alt_outlined,
-                          color: kIconColor,
-                          size: 18,
+                ),
+                child: IconButton(
+                  icon: Icon(
+                    CupertinoIcons.pencil,
+                    color: RColors.darkerGrey,
+                    size: 24.sp,
+                  ),
+                  onPressed: () async {
+                    // Navigate and wait for new data
+                    final updatedData = await Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => EditAgencyProfile(
+                          name: agencyName,
+                          email: agencyEmail,
+                          phone: agencyPhone,
+                          license: agencyLicense,
+                          imagePath: imagePath,
                         ),
                       ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 15),
-            const Center(
-              child: Text(
-                "اسم الوكالة",
-                style: TextStyle(
-                  fontSize: 22,
-                  fontWeight: FontWeight.bold,
-                  color: RColors.textPrimary,
-                ),
-              ),
-            ),
-            const SizedBox(height: 5),
-            const Center(
-              child: Text(
-                "agency@example.com",
-                style: TextStyle(
-                  fontSize: 16,
-                  color: RColors.textSecondary,
-                ),
-              ),
-            ),
-            const SizedBox(height: 35),
-            _mainInfoCard(),
-            const SizedBox(height: 40),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton.icon(
-                icon: const Icon(Icons.logout_outlined),
-                label: const Text(
-                  "تسجيل الخروج",
-                  style: TextStyle(fontSize: 18),
-                ),
-                onPressed: () => showLogoutDialog(context),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: RColors.error,
-                  foregroundColor: RColors.white,
-                  padding: const EdgeInsets.symmetric(vertical: 14),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                ),
-              ),
-            ),
-            const SizedBox(height: 30),
-          ],
-        ),
-      ),
-    );
-  }
+                    );
 
-  Widget _mainInfoCard() {
-    return Container(
-      decoration: BoxDecoration(
-        color: RColors.white,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: RColors.borderSecondary),
-      ),
-      child: Column(
-        children: [
-          _infoTile(Icons.phone_outlined, "رقم الهاتف", "+970 599 123 456"),
-          _divider(),
-          _infoTile(Icons.credit_card_outlined, "رخصة الوكالة", "AG123456789"),
-          _divider(),
-          _infoTile(
-            Icons.verified_user_outlined,
-            "الحالة",
-            status == true ? "موثق" : "غير موثق",
-            valueColor: status == true ? Colors.green : Colors.red,
+                    // Update profile if user saved changes
+                    if (updatedData != null) {
+                      setState(() {
+                        agencyName = updatedData["name"];
+                        agencyEmail = updatedData["email"];
+                        agencyPhone = updatedData["phone"];
+                        agencyLicense = updatedData["license"];
+                        imagePath = updatedData["imagePath"];
+                      });
+                    }
+                  },
+                ),
+              ),
+
+              Expanded(
+                child: Center(
+                  child: ProfileAvatar(
+                    kIconColor: kIconColor,
+                    icon: Icons.camera_alt_outlined,
+                    imagePath: imagePath,
+                  ),
+                ),
+              ),
+
+              SizedBox(width: 58.w, height: 58.w),
+            ],
           ),
+
+          SizedBox(height: 20.h),
+
+          // Agency Name
+          Center(
+            child: Text(
+              agencyName,
+              style: TextStyle(
+                fontSize: 22.sp,
+                fontWeight: FontWeight.bold,
+                color: RColors.textPrimary,
+              ),
+            ),
+          ),
+
+          SizedBox(height: 5.h),
+
+          // Email
+          Center(
+            child: Text(
+              agencyEmail,
+              style: TextStyle(
+                fontSize: 16.sp,
+                color: RColors.textSecondary,
+              ),
+            ),
+          ),
+
+          SizedBox(height: 35.h),
+
+          // Main info card
+          mainInfoCard(true),
+
+          SizedBox(height: 40.h),
+
+          // Logout Button
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton.icon(
+              icon: const Icon(Icons.logout_outlined),
+              label: Text(
+                "تسجيل الخروج",
+                style: TextStyle(fontSize: 18.sp),
+              ),
+              onPressed: () => showLogoutDialog(context),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: RColors.primary,
+                foregroundColor: RColors.white,
+                padding: EdgeInsets.symmetric(vertical: 14.h),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(24.r),
+                ),
+              ),
+            ),
+          ),
+
+          SizedBox(height: 30.h),
         ],
       ),
     );
   }
-
-  Widget _infoTile(IconData icon, String title, String value, {Color? valueColor}) {
-    return ListTile(
-      leading: Icon(icon, color: kIconColor, size: 26),
-      title: Text(
-        title,
-        style: const TextStyle(
-          fontWeight: FontWeight.bold,
-          fontSize: 16,
-          color: RColors.textPrimary,
-        ),
-      ),
-      subtitle: Text(
-        value,
-        style: TextStyle(
-          fontSize: 14,
-          color: valueColor ?? RColors.textSecondary,
-        ),
-      ),
-    );
-  }
-
-  Widget _divider() {
-    return const Divider(
-      indent: 20,
-      endIndent: 20,
-      color: RColors.borderPrimary,
-    );
-  }
-
-
 }

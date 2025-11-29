@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:vehicle_rental_app/screens/agency_bottom_navigation_item/agency_profile.dart';
+import 'package:vehicle_rental_app/screens/agency_bottom_navigation_item/currentRentalvehicle.dart'
+    show CurrentRentalVehicle;
 import 'package:vehicle_rental_app/screens/agency_bottom_navigation_item/home.dart';
 import 'package:vehicle_rental_app/screens/agency_bottom_navigation_item/my_vehicle.dart';
+
 import 'package:vehicle_rental_app/utils/constants/colors.dart';
 
 class BottomNavigation extends StatefulWidget {
@@ -14,17 +17,44 @@ class BottomNavigation extends StatefulWidget {
 class _BottomNavigationState extends State<BottomNavigation> {
   int _currentIndex = 0;
 
+  final List<String> _titles = [
+    "الرئيسية",
+    "مركباتي",
+    "المركبات المؤجرة",
+    "الملف الشخصي",
+  ];
+
   final List<Widget> _pages = const [
     Home(),
     MyVehicle(),
+    CurrentRentalVehicle(),
     AgencyProfile(),
   ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      extendBody: true,
+      backgroundColor: RColors.white,
+
+      /// Dynamic AppBar title
+      appBar: AppBar(
+        leading: Text(""),
+        backgroundColor: RColors.white,
+        elevation: 0,
+        centerTitle: true,
+        title: Text(
+          _titles[_currentIndex],
+          style: const TextStyle(
+            fontWeight: FontWeight.bold,
+            color: RColors.textPrimary,
+          ),
+        ),
+      ),
+
+      /// Body
       body: _pages[_currentIndex],
+
+      /// Bottom Navigation Bar
       bottomNavigationBar: SafeArea(
         child: Container(
           margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
@@ -42,9 +72,9 @@ class _BottomNavigationState extends State<BottomNavigation> {
           child: ClipRRect(
             borderRadius: BorderRadius.circular(30),
             child: BottomNavigationBar(
-              backgroundColor: RColors.primary,       // Nav bar background
-              selectedItemColor: RColors.white,       // Selected icon color
-              unselectedItemColor: Colors.white70,    // Unselected icon color
+              backgroundColor: RColors.primary,
+              selectedItemColor: RColors.white,
+              unselectedItemColor: Colors.white70,
               currentIndex: _currentIndex,
               onTap: (index) {
                 setState(() {
@@ -52,19 +82,24 @@ class _BottomNavigationState extends State<BottomNavigation> {
                 });
               },
               type: BottomNavigationBarType.fixed,
-              showSelectedLabels: false,             // hide labels
-              showUnselectedLabels: false,           // hide labels
+              showSelectedLabels: false,
+              showUnselectedLabels: false,
               iconSize: 28,
               elevation: 0,
               items: const [
                 BottomNavigationBarItem(
                   icon: Icon(Icons.home_outlined),
                   activeIcon: Icon(Icons.home),
-                  label: "", // label can be empty
+                  label: "",
                 ),
                 BottomNavigationBarItem(
                   icon: Icon(Icons.directions_car_outlined),
                   activeIcon: Icon(Icons.directions_car),
+                  label: "",
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.history_outlined),
+                  activeIcon: Icon(Icons.history),
                   label: "",
                 ),
                 BottomNavigationBarItem(
