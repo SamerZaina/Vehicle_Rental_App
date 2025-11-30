@@ -98,8 +98,8 @@ class _BottomNavigationState extends State<BottomNavigation> {
                   label: "",
                 ),
                 BottomNavigationBarItem(
-                  icon: Icon(Icons.history_outlined),
-                  activeIcon: Icon(Icons.history),
+                  icon: Icon(Icons.car_rental_outlined),
+                  activeIcon: Icon(Icons.car_rental),
                   label: "",
                 ),
                 BottomNavigationBarItem(

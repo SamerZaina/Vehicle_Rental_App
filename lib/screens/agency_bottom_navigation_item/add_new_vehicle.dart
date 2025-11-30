@@ -376,7 +376,7 @@ class _AddNewVehicleState extends State<AddNewVehicle> {
                   ),
                 ),
                 child: Text(
-                  'حفظ',
+                  'اضافة',
                   style: TextStyle(fontSize: 18.sp, color: Colors.white),
                 ),
               ),
