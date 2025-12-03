@@ -42,8 +42,6 @@ dependencies:
   google_fonts: ^6.3.2
   smooth_page_indicator: ^1.2.1
   iconsax_flutter: ^1.0.1
-  syncfusion_flutter_datepicker: ^31.2.15
-  time_range_picker: ^2.3.1
 
 
 

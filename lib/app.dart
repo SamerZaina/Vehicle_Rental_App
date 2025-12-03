@@ -38,7 +38,7 @@ class App extends StatelessWidget {
               theme: RAppTheme.LightTheme,
               darkTheme: RAppTheme.DarkTheme,
               themeMode: themeMode,
-              home: NavigationMenu()
+              home: BookingDetails()
             ),
           ),
         );
