@@ -10,9 +10,14 @@ class RImages {
 
   static const String googleIcon = "assets/images/icons/google_icon.png";
   static const String facebookIcon = "assets/images/icons/facebook_icon.png";
+  static const String visaCard = "assets/images/icons/visaCard.png";
+  static const String paypal = "assets/images/icons/paypal.png";
+
   static const String car1 = "assets/images/cars/car1.png";
   static const String car2= "assets/images/cars/car2.png";
   static const String car3= "assets/images/cars/car3.png";
+  static const String car4= "assets/images/cars/car4.png";
+
 
 
 

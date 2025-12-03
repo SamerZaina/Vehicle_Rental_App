@@ -44,6 +44,9 @@ class _HomeState extends State<Home> {
         "price": "\$100/اليوم",
       },
     ];
+     final  List<Map<String , dynamic>> brands = [
+
+     ];
 
     return Scaffold(
       appBar: dark ? RAppbarTheme.darkAppBarTheme(
@@ -75,7 +78,8 @@ class _HomeState extends State<Home> {
           ) ,
           
         ]
-      )  : RAppbarTheme.lightAppBarTheme(
+      )
+          : RAppbarTheme.lightAppBarTheme(
           actions: [
             Container(
               width: 40.w,
@@ -128,44 +132,78 @@ class _HomeState extends State<Home> {
                             ],
                           ),
                         ),
-                        Container(
-                       //   color: Colors.grey,
-                          width: 400.w,
-                          height: 120.h,
-                          margin: EdgeInsets.fromLTRB(15.w, 0, 0, 0),
-                          child: ListView.builder(
-                            itemCount: 4,
-                            scrollDirection: Axis.horizontal,
-                            itemBuilder: (BuildContext context, int index) {
-                              return  Column(
-                                children: [
-                                  Container(
-                                    margin: EdgeInsets.fromLTRB(40, 20, 0, 10),
-                                    width: 60.w,
-                                    height: 60.h,
-                                    decoration:BoxDecoration(
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Column(
+                              children: [
+                                Container(
+                                  margin: EdgeInsets.fromLTRB(40, 20, 0, 10),
+                                  width: 70.w,
+                                  height: 70.h,
+                                  decoration:BoxDecoration(
                                       color: RColors.primary,
-                                       borderRadius: BorderRadius.circular(50)
-                                    ),
-                                    child: Icon(CupertinoIcons.car, color: RColors.white,size: 30.sp,),
+                                      borderRadius: BorderRadius.circular(50)
                                   ),
-                                  Container(
-                                    margin: EdgeInsets.fromLTRB(40, 0, 0, 0),
-                                      child: Text('سيارات',
-                                      //style: TextStyle(fontWeight: FontWeight.w600),
-          
-                                      ) ,)
-                                ],
-                              );
-                            },
-                          ),
+                                  child: Icon(CupertinoIcons.car, color: RColors.white,size: 30.sp,),
+                                ),
+                                Container(
+                                  margin: EdgeInsets.fromLTRB(40, 0, 0, 0),
+                                  child: Text('سيارات',
+                                    //style: TextStyle(fontWeight: FontWeight.w600),
+
+                                  ) ,)
+                              ],
+                            ),
+                            Column(
+                              children: [
+                                Container(
+                                  margin: EdgeInsets.fromLTRB(40, 20, 0, 10),
+                                  width: 70.w,
+                                  height: 70.h,
+                                  decoration:BoxDecoration(
+                                      color: RColors.primary,
+                                      borderRadius: BorderRadius.circular(50)
+                                  ),
+                                  child: Icon(CupertinoIcons.car, color: RColors.white,size: 30.sp,),
+                                ),
+                                Container(
+                                  margin: EdgeInsets.fromLTRB(40, 0, 0, 0),
+                                  child: Text('سيارات',
+                                    //style: TextStyle(fontWeight: FontWeight.w600),
+
+                                  ) ,)
+                              ],
+                            ),
+                            Column(
+                              children: [
+                                Container(
+                                  margin: EdgeInsets.fromLTRB(40, 20, 0, 10),
+                                  width: 70.w,
+                                  height: 70.h,
+                                  decoration:BoxDecoration(
+                                      color: RColors.primary,
+                                      borderRadius: BorderRadius.circular(50)
+                                  ),
+                                  child: Icon(CupertinoIcons.car, color: RColors.white,size: 30.sp,),
+                                ),
+                                Container(
+                                  margin: EdgeInsets.fromLTRB(40, 0, 0, 0),
+                                  child: Text('سيارات',
+                                    //style: TextStyle(fontWeight: FontWeight.w600),
+
+                                  ) ,)
+                              ],
+                            )
+                          ],
                         ) ,
           
                       ],
                     ),
-          
-          
-                ),
+
+              ),
+              SizedBox(height: RSizes.spaceBtwItems.h,),
+
               Container(
                 margin: EdgeInsets.fromLTRB(0, 10.h, 0, 0),
                 width: 430.w,

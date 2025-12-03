@@ -3,9 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
+import 'package:vehicle_rental_app/screens/agency_bottom_navigation_item/home.dart';
+import 'package:vehicle_rental_app/screens/bottom_navigation_items/details/booking_date_container.dart';
+import 'package:vehicle_rental_app/screens/bottom_navigation_items/payment/payment_confirmation.dart';
+import 'package:vehicle_rental_app/screens/bottom_navigation_items/payment/payment_details_container.dart';
 import 'package:vehicle_rental_app/utils/helpers/helper_functions.dart';
-
 import '../../../utils/constants/colors.dart';
+import '../../../utils/constants/sizes.dart';
 import '../../../widgets/RAppbar.dart';
 
 class BookingDetails extends StatefulWidget {
@@ -17,6 +21,8 @@ class BookingDetails extends StatefulWidget {
 
 class _BookingDetailsState extends State<BookingDetails> {
   int currentStep = 0;
+  bool isTimeChosen = false;
+  bool isDateChosen = false;
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +38,10 @@ class _BookingDetailsState extends State<BookingDetails> {
                 ),
                 margin: EdgeInsets.fromLTRB(0, 0, 5, 0),
                 child: IconButton(
-                  onPressed: () => Get.back(),
+                  onPressed: () {
+                  setState(() {
+                    if(currentStep!=0) currentStep-=1;
+                  });},
                   color: RColors.darkerGrey,
                   icon: Icon(CupertinoIcons.left_chevron),
                 ),
@@ -53,7 +62,10 @@ class _BookingDetailsState extends State<BookingDetails> {
                 ),
                 margin: EdgeInsets.fromLTRB(0, 0, 5, 0),
                 child: IconButton(
-                  onPressed: () => Get.back(),
+                 onPressed: () {
+              setState(() {
+             if(currentStep!=0) currentStep-=1;
+              });},
                   color: RColors.darkerGrey,
                   icon: Icon(CupertinoIcons.left_chevron),
                 ),
@@ -73,25 +85,32 @@ class _BookingDetailsState extends State<BookingDetails> {
               margin: EdgeInsets.only(top: 25.h, left: 15, right: 15),
               child: bookingStepper(currentStep),
             ),
-            Container(
-              margin: EdgeInsets.all(15),
-              child: Column(
-                children: [
-                  
-                ],
-              ),
-            ),
-        
+            getStepContent(),
             Align(
               alignment: Alignment.center,
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(backgroundColor: RColors.primary),
                 onPressed: () {
+                  if(currentStep == 0) {
+                    if (!isDateChosen && !isTimeChosen) {
+                      Get.snackbar(
+                        "تنبيه",
+                        "الرجاء اختيار وقت الحجز قبل المتابعة",
+                        backgroundColor: Colors.red,
+                        colorText: Colors.white,
+                        snackPosition: SnackPosition.BOTTOM,
+                      );
+                      return;
+                    }
+                  }
                   if (currentStep < 2) {
                     setState(() {
                       currentStep++;
                     });
+                  } else {
+                    //
                   }
+
                 },
                 child: Container(
                   margin: EdgeInsets.fromLTRB(0, 5, 0, 0),
@@ -99,7 +118,9 @@ class _BookingDetailsState extends State<BookingDetails> {
                     width: 340.w,
                     height: 60.h,
                     child: Center(
-                      child: Text(currentStep == 2 ? "إنهاء" : "التالي" ,
+                      child: Text(
+                        currentStep == 0 ? "ادفع 120\$"  :
+                        currentStep == 1 ? "استمر" : "تأكيد",
                         style: TextStyle(
                           color: RColors.white,
                           fontWeight: FontWeight.bold,
@@ -111,11 +132,33 @@ class _BookingDetailsState extends State<BookingDetails> {
                 ),
               ),
             ),
+            SizedBox(height: RSizes.defaultSpace,)
           ],
         ),
       ),
     );
   }
+  Widget getStepContent() {
+    if (currentStep == 0) {
+      return BookingDateContainer(
+        onTimeSelected: (value) {
+          setState(() {
+            isTimeChosen = value;
+          });
+        },
+        onDateSelected: (value) {
+          setState(() {
+            isDateChosen = value;
+          });
+        },
+      );
+    } else if (currentStep == 1) {
+      return PaymentDetailsContainer();
+    } else {
+      return  PaymentConfirmation();
+    }
+  }
+
 
   Widget bookingStepper(int currentStep) {
     return Directionality(
@@ -174,7 +217,9 @@ class _BookingDetailsState extends State<BookingDetails> {
                     ),
                   ),
                 )
-              : null,
+              : isPassed ? Center(
+            child: Icon(Icons.check, color: RColors.white,size: 15,),
+          ) : null,
         ),
         const SizedBox(height: 4),
         Container(

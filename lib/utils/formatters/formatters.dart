@@ -1,11 +1,18 @@
 
+import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class RFormatter{
   static String formatDate(DateTime? date){
     date ??= DateTime.now();
-    return DateFormat('dd-MMM-yyyy').format(date);
+    return DateFormat('dd/MMM/yyyy').format(date);
 
+  }
+  static String formatTime(TimeOfDay time) {
+    final hour   = time.hourOfPeriod == 0 ? 12 : time.hourOfPeriod;
+    final minute = time.minute.toString().padLeft(2, '0');
+    final period = time.period == DayPeriod.am ? 'ص' : 'م';
+    return '$hour : $minute $period';
   }
 
   static String formatCurrency(double amount){
