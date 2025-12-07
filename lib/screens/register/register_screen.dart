@@ -5,6 +5,8 @@ import 'package:get/get.dart';
 import 'package:vehicle_rental_app/screens/login/login_screen.dart';
 import 'package:vehicle_rental_app/widgets/RAppbar.dart';
 import 'package:vehicle_rental_app/widgets/divider_social_login.dart';
+import '../../core/api_constants.dart';
+import '../../core/dio_client.dart';
 import '../../utils/constants/colors.dart';
 import '../../utils/constants/sizes.dart';
 import '../../utils/constants/text_strings.dart';
@@ -154,7 +156,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 return;}
                             }),
                             SizedBox(height: RSizes.spaceBtwItems),
-                            SecondButton(title: RTexts.loginBtn, onPressed: () { Get.to(LoginScreen());}),
+                            SecondButton(title: RTexts.loginBtn, onPressed: () async{
+                              final response = await DioClient.dio.get(ApiConstants.users);
+                              print(response.data);
+
+                            }),
+                            SizedBox(height: RSizes.spaceBtwItems),
+
+                            SecondButton(title: RTexts.agencySignupBtn, onPressed: () async {
+                              await createUserTest();
+                            }),
                           ],
                         ),
                       ),
@@ -169,5 +180,29 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 ) ))
                 );
 }
+  Future<void> createUserTest() async {
+    try {
+      final response = await DioClient.dio.post(
+        ApiConstants.users,
+        data: {
+          'name': 'Roaa ',
+          'email': 'roaa@test.com',
+          'phone': '0599000000',
+          'password': '123456',
+          'role': 'customer',
+          'is_active': true,
+          'is_approved': false,
+          'profile_photo_path': 'some_path',
+          'address': 'Gaza',
+          'email_verified_at': null,
+        },
+      );
+
+      print('Created user: ${response.data}');
+    } catch (e) {
+      print('Error while creating user: $e');
+    }
+  }
+
 }
 

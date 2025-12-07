@@ -16,6 +16,8 @@ class RTexts {
   static const String forgotPassword = 'هل نسيت كلمة المرور؟';
   static const String loginBtn = 'تسجيل دخول';
   static const String signupBtn = 'تسجيل جديد';
+  static const String agencySignupBtn = 'تسجيل جديد كمعرض';
+
   static const String signupTitle ='تسجيل حساب جديد';
   static const String fullName ='الاسم كامل';
   static const String phoneNumber ='رقم الهاتف';

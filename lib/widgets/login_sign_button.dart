@@ -35,21 +35,25 @@ class SecondButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final dark = RHelperFunctions.isDarkMode(context);
-    return ElevatedButton(
-        style: ElevatedButton.styleFrom(
-          backgroundColor:RColors.white.withOpacity(0.7) ,
-          side: BorderSide(
-              width: 1.w ,
-              color: RColors.primary
+    return SizedBox(
+      width: 345.w,
+      height: 55.h,
+      child: ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            backgroundColor:RColors.white.withOpacity(0.7) ,
+            side: BorderSide(
+                width: 1.w ,
+                color: RColors.primary
+            ),
+            padding: EdgeInsets.zero
           ),
-          padding: EdgeInsets.symmetric(vertical: 15.h , horizontal: 120.h),
-        ),
-        onPressed:onPressed,
-        child: Text(title,
-          style: TextStyle(
-              color:  dark? RColors.light:RColors.primary ,
-            fontWeight: FontWeight.bold
-          ),
-        ));
+          onPressed:onPressed,
+          child: Text(title,
+            style: TextStyle(
+                color:  dark? RColors.light:RColors.primary ,
+              fontWeight: FontWeight.bold
+            ),
+          )),
+    );
   }
 }
