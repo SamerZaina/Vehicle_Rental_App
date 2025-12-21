@@ -4,22 +4,25 @@ import 'dart:convert';
 
 import '../api_service/api_service.dart';
 import 'package:vehicle_rental_app/model/vehicle_basic_details_modle.dart';
-
-// Make sure this file exists and has the correct structure
-import '../model/vehicle_response.dart'; // This should be AllVehicleResponse
+import '../model/vehicle_response.dart';
 
 class AgencyCarsController extends GetxController {
   final ApiService apiService = ApiService();
 
   final RxBool isLoading = false.obs;
   final RxString errorMessage = ''.obs;
+  final RxBool isSearching = false.obs;
 
-  final RxList<VehicleBasicDetailsModle> vehicles =
-      <VehicleBasicDetailsModle>[].obs;
+  final RxList<VehicleBasicDetailsModle> allVehicles = <VehicleBasicDetailsModle>[].obs;
+  final RxList<VehicleBasicDetailsModle> filteredVehicles = <VehicleBasicDetailsModle>[].obs;
 
+  final RxString searchQuery = ''.obs;
+  final RxDouble minRating = 0.0.obs;
   final RxInt count = 0.obs;
 
+  // Endpoints
   static const String carsUrl = '/agency/cars';
+  static const String searchUrl = '/agency/cars/search';
 
   @override
   void onInit() {
@@ -27,22 +30,22 @@ class AgencyCarsController extends GetxController {
     fetchAgencyCars();
   }
 
-  /// ✅ Fetch agency cars (GET)
+  /// Getter for vehicles list
+  List<VehicleBasicDetailsModle> get vehicles {
+    return filteredVehicles.isNotEmpty ? filteredVehicles : allVehicles;
+  }
+
+  /// ✅ Fetch all agency cars (GET)
   Future<void> fetchAgencyCars() async {
     try {
       isLoading.value = true;
       errorMessage.value = '';
+      isSearching.value = false;
 
       final response = await apiService.dio.get(carsUrl);
 
-      // Log the response for debugging
-      print('=== Fetch Agency Cars Response ===');
-      print('Response status: ${response.statusCode}');
-      print('Response data type: ${response.data.runtimeType}');
-
       Map<String, dynamic> responseData;
 
-      // Handle both Map and String responses
       if (response.data is Map<String, dynamic>) {
         responseData = response.data;
       } else if (response.data is String) {
@@ -55,82 +58,30 @@ class AgencyCarsController extends GetxController {
         throw FormatException('Unexpected response type: ${response.data.runtimeType}');
       }
 
-      // Log the structure of the response
-      print('Response keys: ${responseData.keys.toList()}');
-      print('Has success key: ${responseData.containsKey('success')}');
-      print('Has count key: ${responseData.containsKey('count')}');
-      print('Has cars key: ${responseData.containsKey('cars')}');
-
-      if (responseData.containsKey('cars')) {
-        print('Cars data type: ${responseData['cars'].runtimeType}');
-        if (responseData['cars'] is List) {
-          print('Cars list length: ${(responseData['cars'] as List).length}');
-        }
-      }
-
-      // Parse the response using AllVehicleResponse
       final allVehicleResponse = AllVehicleResponse.fromJson(responseData);
 
       if (allVehicleResponse.success) {
-        // IMPORTANT: Use .cars not .vehicles (based on your API response)
-        vehicles.assignAll(allVehicleResponse.vehicles);
+        allVehicles.assignAll(allVehicleResponse.vehicles);
         count.value = allVehicleResponse.count;
-
-        // Debug: print details
-        print('Successfully loaded ${vehicles.length} vehicles');
-
-        if (vehicles.isNotEmpty) {
-          final firstVehicle = vehicles.first;
-          print('=== First Vehicle Details ===');
-          print('ID: ${firstVehicle.id}');
-          print('Brand: ${firstVehicle.model.brand?.name ?? "N/A"}');
-          print('Model: ${firstVehicle.model.name}');
-          print('Price: ${firstVehicle.pricePerHour}');
-          print('Status: ${firstVehicle.status}');
-          print('Images count: ${firstVehicle.imagesPaths?.length ?? 0}');
-          if (firstVehicle.imagesPaths != null && firstVehicle.imagesPaths!.isNotEmpty) {
-            print('First image path: ${firstVehicle.imagesPaths!.first}');
-          }
-        }
+        filteredVehicles.clear(); // Clear any previous filters
       } else {
         errorMessage.value = 'API returned success: false';
-        print('API returned success: false');
       }
-
-      print('=== End Fetch ===');
 
     } on DioException catch (e) {
-      print('=== Dio Error ===');
-      print('Error type: ${e.type}');
-      print('Error message: ${e.message}');
+      print('Dio Error in fetchAgencyCars: $e');
       print('Status Code: ${e.response?.statusCode}');
-      print('Response data: ${e.response?.data}');
-
-      // Extract error message
-      String errorMsg = 'Server error occurred';
-      if (e.response?.data != null) {
-        if (e.response!.data is Map<String, dynamic>) {
-          errorMsg = e.response!.data['message']?.toString() ??
-              e.response!.data['error']?.toString() ??
-              'Server error: ${e.message}';
-        } else if (e.response!.data is String) {
-          errorMsg = e.response!.data;
-        }
-      } else {
-        errorMsg = 'Network error: ${e.message}';
-      }
-
-      errorMessage.value = errorMsg;
-      print('Error message set to: $errorMsg');
+      print('Response: ${e.response?.data}');
+      errorMessage.value =
+          e.response?.data['message']?.toString() ??
+              'Server error occurred: ${e.message}';
 
     } on FormatException catch (e) {
-      print('=== Format Error ===');
-      print('Error: $e');
-      errorMessage.value = 'Invalid response format from server: $e';
+      print('Format Error: $e');
+      errorMessage.value = 'Invalid response format: $e';
 
     } catch (e, stackTrace) {
-      print('=== Unexpected Error ===');
-      print('Error: $e');
+      print('Unexpected Error: $e');
       print('Stack Trace: $stackTrace');
       errorMessage.value = 'Unexpected error occurred: $e';
 
@@ -139,71 +90,231 @@ class AgencyCarsController extends GetxController {
     }
   }
 
-  /// ✅ Refresh data (pull-to-refresh)
-  Future<void> refreshData() async {
-    await fetchAgencyCars();
-  }
+  /// 🔍 Search vehicles using API endpoint
+  Future<void> searchVehicles(String query) async {
+    try {
+      searchQuery.value = query;
 
-  /// ✅ Add a new vehicle to the list (for immediate UI update after adding)
-  void addNewVehicleToList(VehicleBasicDetailsModle vehicle) {
-    vehicles.insert(0, vehicle); // Add at the beginning (most recent first)
-    count.value = vehicles.length;
-    vehicles.refresh(); // Notify listeners
-    print('Added new vehicle to list. Total: ${vehicles.length}');
-  }
+      // If query is empty and no rating filter, clear search
+      if (query.isEmpty && minRating.value == 0) {
+        filteredVehicles.clear();
+        isSearching.value = false;
+        return;
+      }
 
-  /// ✅ Remove a vehicle from the list
-  void removeVehicleFromList(int vehicleId) {
-    final initialCount = vehicles.length;
-    vehicles.removeWhere((vehicle) => vehicle.id == vehicleId);
-    count.value = vehicles.length;
-    vehicles.refresh(); // Notify listeners
-    print('Removed vehicle $vehicleId. Before: $initialCount, After: ${vehicles.length}');
-  }
+      isSearching.value = true;
+      errorMessage.value = '';
 
-  /// ✅ Update a vehicle in the list
-  void updateVehicleInList(VehicleBasicDetailsModle updatedVehicle) {
-    final index = vehicles.indexWhere((v) => v.id == updatedVehicle.id);
-    if (index != -1) {
-      vehicles[index] = updatedVehicle;
-      vehicles.refresh(); // Notify listeners
-      print('Updated vehicle ${updatedVehicle.id} at index $index');
-    } else {
-      print('Vehicle ${updatedVehicle.id} not found in list');
+      // Build query parameters for search
+      final Map<String, dynamic> queryParams = {};
+
+      if (query.isNotEmpty) {
+        // You might want to split the query to search in both brand and model
+        // Or let backend handle it based on your API design
+        queryParams['brand'] = query;
+        queryParams['model'] = query; // Send same query for both
+      }
+
+      if (minRating.value > 0) {
+        queryParams['rating'] = minRating.value.toString();
+      }
+
+      print('Searching with params: $queryParams');
+
+      final response = await apiService.dio.get(
+        searchUrl,
+        queryParameters: queryParams,
+      );
+
+      Map<String, dynamic> responseData;
+
+      if (response.data is Map<String, dynamic>) {
+        responseData = response.data;
+      } else if (response.data is String) {
+        try {
+          responseData = jsonDecode(response.data) as Map<String, dynamic>;
+        } catch (e) {
+          throw FormatException('Failed to decode JSON string: $e');
+        }
+      } else {
+        throw FormatException('Unexpected response type: ${response.data.runtimeType}');
+      }
+
+      final searchResponse = AllVehicleResponse.fromJson(responseData);
+
+      if (searchResponse.success) {
+        filteredVehicles.assignAll(searchResponse.vehicles);
+        count.value = searchResponse.vehicles.length;
+        print('Search found ${searchResponse.vehicles.length} vehicles');
+      } else {
+        errorMessage.value = 'Search returned no results';
+        filteredVehicles.clear();
+      }
+
+    } on DioException catch (e) {
+      print('Dio Error in searchVehicles: $e');
+      print('Status Code: ${e.response?.statusCode}');
+      print('Response: ${e.response?.data}');
+
+      // If search endpoint fails, fall back to local filtering
+      print('Falling back to local search...');
+      _applyLocalFilters();
+
+    } catch (e, stackTrace) {
+      print('Unexpected Error in search: $e');
+      print('Stack Trace: $stackTrace');
+      _applyLocalFilters();
+
+    } finally {
+      isSearching.value = false;
     }
   }
 
-  /// ✅ Get vehicle by ID
-  VehicleBasicDetailsModle? getVehicleById(int id) {
-    return vehicles.firstWhereOrNull((vehicle) => vehicle.id == id);
+  /// ⭐ Filter vehicles by minimum rating
+  void filterByRating(double minRatingValue) {
+    minRating.value = minRatingValue;
+
+    // If we have an active search, combine with API
+    if (searchQuery.value.isNotEmpty) {
+      searchVehicles(searchQuery.value);
+    } else if (minRatingValue > 0) {
+      // Only rating filter, apply locally
+      _applyLocalFilters();
+    } else {
+      // No filters, clear filtered list
+      filteredVehicles.clear();
+      isSearching.value = false;
+    }
   }
 
-  /// ✅ Filter vehicles by status
-  List<VehicleBasicDetailsModle> getVehiclesByStatus(String status) {
-    return vehicles.where((vehicle) => vehicle.status == status).toList();
+  /// 🔄 Apply filters locally (fallback when API fails)
+  void _applyLocalFilters() {
+    List<VehicleBasicDetailsModle> result = List.from(allVehicles);
+
+    // Apply search filter
+    if (searchQuery.value.isNotEmpty) {
+      final query = searchQuery.value.toLowerCase();
+      result = result.where((vehicle) {
+        final brandName = vehicle.model.brand?.name?.toLowerCase() ?? '';
+        final modelName = vehicle.model.name.toLowerCase();
+        final registration = vehicle.registrationNumber.toLowerCase();
+
+        return brandName.contains(query) ||
+            modelName.contains(query) ||
+            registration.contains(query);
+      }).toList();
+    }
+
+    // Apply rating filter
+    if (minRating.value > 0) {
+      result = result.where((vehicle) {
+        final rating = double.tryParse(vehicle.rate ?? '0') ?? 0;
+        return rating >= minRating.value;
+      }).toList();
+    }
+
+    filteredVehicles.assignAll(result);
+    isSearching.value = result.isNotEmpty &&
+        (searchQuery.value.isNotEmpty || minRating.value > 0);
   }
 
-  /// ✅ Filter vehicles by search query
-  List<VehicleBasicDetailsModle> searchVehicles(String query) {
-    if (query.isEmpty) return vehicles.toList();
+  /// 🧹 Clear all filters
+  void clearFilters() {
+    searchQuery.value = '';
+    minRating.value = 0.0;
+    filteredVehicles.clear();
+    isSearching.value = false;
+    errorMessage.value = '';
+  }
 
-    final lowerQuery = query.toLowerCase();
-    return vehicles.where((vehicle) {
+  /// 🔄 Refresh data
+  Future<void> refreshData() async {
+    if (isSearching.value || filteredVehicles.isNotEmpty) {
+      // If searching, refresh search
+      await searchVehicles(searchQuery.value);
+    } else {
+      // Otherwise, refresh all vehicles
+      await fetchAgencyCars();
+    }
+  }
+
+  /// Add a new vehicle to the list
+  void addNewVehicleToList(VehicleBasicDetailsModle vehicle) {
+    allVehicles.insert(0, vehicle);
+    count.value = allVehicles.length;
+
+    // If we're currently searching, check if new vehicle matches filters
+    if (isSearching.value || filteredVehicles.isNotEmpty) {
+      if (_matchesCurrentFilters(vehicle)) {
+        filteredVehicles.insert(0, vehicle);
+      }
+    }
+  }
+
+  /// Check if vehicle matches current filters
+  bool _matchesCurrentFilters(VehicleBasicDetailsModle vehicle) {
+    // Search filter
+    if (searchQuery.value.isNotEmpty) {
+      final query = searchQuery.value.toLowerCase();
       final brandName = vehicle.model.brand?.name?.toLowerCase() ?? '';
       final modelName = vehicle.model.name.toLowerCase();
       final registration = vehicle.registrationNumber.toLowerCase();
 
-      return brandName.contains(lowerQuery) ||
-          modelName.contains(lowerQuery) ||
-          registration.contains(lowerQuery);
-    }).toList();
+      if (!brandName.contains(query) &&
+          !modelName.contains(query) &&
+          !registration.contains(query)) {
+        return false;
+      }
+    }
+
+    // Rating filter
+    if (minRating.value > 0) {
+      final rating = double.tryParse(vehicle.rate ?? '0') ?? 0;
+      if (rating < minRating.value) {
+        return false;
+      }
+    }
+
+    return true;
   }
 
-  /// ✅ Clear all vehicles
-  void clearVehicles() {
-    vehicles.clear();
-    count.value = 0;
-    vehicles.refresh();
-    print('Cleared all vehicles');
+  /// Remove a vehicle from the list
+  void removeVehicleFromList(int vehicleId) {
+    allVehicles.removeWhere((vehicle) => vehicle.id == vehicleId);
+    filteredVehicles.removeWhere((vehicle) => vehicle.id == vehicleId);
+    count.value = allVehicles.length;
+  }
+
+  /// Update a vehicle in the list
+  void updateVehicleInList(VehicleBasicDetailsModle updatedVehicle) {
+    final index = allVehicles.indexWhere((v) => v.id == updatedVehicle.id);
+    if (index != -1) {
+      allVehicles[index] = updatedVehicle;
+
+      // Update in filtered list if present
+      final filteredIndex = filteredVehicles.indexWhere((v) => v.id == updatedVehicle.id);
+      if (filteredIndex != -1) {
+        if (_matchesCurrentFilters(updatedVehicle)) {
+          filteredVehicles[filteredIndex] = updatedVehicle;
+        } else {
+          filteredVehicles.removeAt(filteredIndex);
+        }
+      } else if (_matchesCurrentFilters(updatedVehicle)) {
+        filteredVehicles.add(updatedVehicle);
+      }
+    }
+  }
+
+  /// Get active filters count
+  int get activeFiltersCount {
+    int count = 0;
+    if (searchQuery.value.isNotEmpty) count++;
+    if (minRating.value > 0) count++;
+    return count;
+  }
+
+  /// Check if currently searching
+  bool get isFiltering {
+    return isSearching.value || filteredVehicles.isNotEmpty;
   }
 }

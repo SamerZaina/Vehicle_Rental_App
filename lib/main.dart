@@ -21,7 +21,7 @@ void main() async {
   //final token = GetStorage().read('token');
 
   //final token = await getTokenFromStorage();
-  final token = "62|7sPwvifsSi5eztBKdCzCwGDkXNpQ7mSt1rFSI2KJ0ff4ce35";
+  final token = "65|A1Wqzu0pnIM7RBRPgEKLXaOOeHl9nIvAAQlkuvPqae553877";
 
   /// Initialize ApiService (solution to late initialization error)
   /// so this line needed to insilize dio befor use controller .
