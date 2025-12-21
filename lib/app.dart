@@ -1,12 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
-import 'package:vehicle_rental_app/screens/agency_bottom_navigation_item/bottom_navigation.dart';
-import 'package:vehicle_rental_app/screens/bottom_navigation_items/details/booking_details.dart';
-import 'package:vehicle_rental_app/screens/bottom_navigation_items/details/details_page.dart';
-import 'package:vehicle_rental_app/screens/bottom_navigation_items/home_screen.dart';
-import 'package:vehicle_rental_app/screens/bottom_navigation_items/profile/edit_profile_screen.dart';
-import 'package:vehicle_rental_app/screens/on_boarding/onBoarding.dart';
+import 'package:vehicle_rental_app/bindings/general_bindings.dart';
 import 'package:vehicle_rental_app/utils/constants/colors.dart';
 import 'package:vehicle_rental_app/utils/theme/theme.dart';
 import 'package:vehicle_rental_app/utils/theme/theme_manager.dart';
@@ -40,6 +35,7 @@ class App extends StatelessWidget {
               theme: RAppTheme.LightTheme,
               darkTheme: RAppTheme.DarkTheme,
               themeMode: themeMode,
+              initialBinding: GeneralBindings(),
               home: const Scaffold(
                 backgroundColor: RColors.primary,
                 body: Center(

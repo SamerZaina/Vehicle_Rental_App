@@ -3,11 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
+import 'package:vehicle_rental_app/data/controllers/user/edit_profile_controller.dart';
 import 'package:vehicle_rental_app/utils/constants/colors.dart';
+import 'package:vehicle_rental_app/utils/constants/image_strings.dart';
 import 'package:vehicle_rental_app/utils/helpers/helper_functions.dart';
 import 'package:vehicle_rental_app/utils/validators/validation.dart';
 import 'package:vehicle_rental_app/widgets/login_text_fields.dart';
 
+import '../../../utils/constants/text_strings.dart';
 import '../../../utils/refactor_widget/profile_avatar.dart';
 import '../../../widgets/RAppbar.dart';
 
@@ -21,10 +24,7 @@ class EditProfile extends StatefulWidget {
 class _EditProfileState extends State<EditProfile> {
   static const Color kIconColor = Color(0xFF767676);
 
-  final TextEditingController nameController = TextEditingController();
-  final TextEditingController emailController = TextEditingController();
-  final TextEditingController phoneController = TextEditingController();
-  final TextEditingController licenseController = TextEditingController();
+ final controller = Get.put(EditProfileController());
 
   @override
   Widget build(BuildContext context) {
@@ -83,14 +83,36 @@ class _EditProfileState extends State<EditProfile> {
     padding: const EdgeInsets.symmetric(horizontal: 20),
     children: [
     const SizedBox(height: 20),
+      // Avatar
+      Obx( () => Column(
+        children: [
+          SizedBox(
+            height: 120,
+            width: 100,
+            child: CircleAvatar(
+                backgroundColor: RColors.primary40,
+                backgroundImage: controller.profileImageUrl.value.isNotEmpty
+                    ? NetworkImage(controller.profileImageUrl.value)
+                    : AssetImage(RImages.user)
+            ),
+          ),
+          TextButton(
+              onPressed: ()=>controller.pickProfileImage('agency'),
+              child: Text('تغيير الصورة' ,
+                  style: TextStyle(
+                    color: RColors.primary,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16.sp,
 
-    // Profile Image
-    ProfileAvatar(kIconColor: kIconColor
-    , icon: Icons.camera_alt_outlined,
-    imagePath: "assets/images/women.png",
-    ),
+                  )) ),
+        ],
+      ),
+      ),
 
-    const SizedBox(height: 30),
+
+
+
+      const SizedBox(height: 30),
 
     // Editable Info Card (without divider lines)
     Container(
@@ -100,61 +122,76 @@ class _EditProfileState extends State<EditProfile> {
     borderRadius: BorderRadius.circular(16),
     //  border: Border.all(color: RColors.borderSecondary),
     ),
-    child: Column(
-    children: [
-    LoginTextFields(
-    controller: nameController,
-    hintText: "براءة السيقلي",
-    icon: CupertinoIcons.person,
-    validator: (value)=> RValidator.validateFullName(value)) ,
-    LoginTextFields(
-    controller: emailController,
-    hintText: "baraa@example.com",
-    icon: CupertinoIcons.mail,
-    validator: (value)=> RValidator.validateEmail(value)) ,
-    LoginTextFields(
-    controller: phoneController,
-    hintText: "+9725963265456",
-    icon: CupertinoIcons.phone,
-    validator: (value)=> RValidator.validatePhoneNumber(value)) ,
-    LoginTextFields(
-    controller: licenseController,
-    hintText: "A126656596",
-    icon: CupertinoIcons.rectangle_paperclip,
-    validator: (value)=> RValidator.validatePhoneNumber(value)) ,
+    child: Form(
+      key: controller.editFormKey,
+      child: Column(
+      children: [
+      LoginTextFields(
+      controller: controller.nameController,
+      hintText: "",
+      icon: CupertinoIcons.person,
+      validator: (value)=> RValidator.validateFullName(value)) ,
 
+      LoginTextFields(
+      controller: controller.phoneController,
+      hintText: "",
+      icon: CupertinoIcons.phone,
+      validator: (value)=> RValidator.validatePhoneNumber(value)) ,
 
-    ],
+      ],
+      ),
     ),
     ),
+      Obx(() {
+        return Container(
+          margin: EdgeInsets.fromLTRB(5, 0,0, 0),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 18,
+            vertical: 2),
+            child: Center(
+              child: TextFormField(
+                  readOnly: true,
+                  decoration: InputDecoration(
+                    filled: true,
+                    fillColor: RColors.white,
+                     border: OutlineInputBorder(
+                       borderSide: BorderSide(
+                         color: RColors.primary40,
 
+                       ),
+                       borderRadius: BorderRadius.circular(8),
+                     ),
+                    enabledBorder:  OutlineInputBorder(
+                      borderSide: BorderSide(
+                        color: RColors.grey,
+
+                      ),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    hintText: controller.licenseName.value.isEmpty
+                        ? RTexts.drivingLicense
+                        : controller.licenseName.value,
+                    prefixIcon: IconButton(
+                      onPressed: () {
+                        controller.pickLicenseFile();
+                      },
+                      icon: const Icon(Icons.add_circle_outline),
+                    ),
+                    suffixIcon: const Icon(Icons.description_outlined),
+                  ),
+
+              ),
+            ),
+          ),
+        );
+      }),
     const SizedBox(height: 40),
 
     // Save Button
     SizedBox(
     width: double.infinity,
     child: ElevatedButton(
-    onPressed: () {
-    ScaffoldMessenger.of(context).showSnackBar(
-    SnackBar(
-    content: const Text(
-    "تم تعديل البيانات بنجاح!",
-    style: TextStyle(
-    fontSize: 16,
-    fontWeight: FontWeight.bold,
-    ),
-    textAlign: TextAlign.center,
-    ),
-    backgroundColor: RColors.primary,
-    behavior: SnackBarBehavior.floating,
-    duration: const Duration(seconds: 3),
-    margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-    shape: RoundedRectangleBorder(
-    borderRadius: BorderRadius.circular(12),
-    ),
-    ),
-    );
-    },
+    onPressed: ()=> controller.saveUpdates('customer'),
     style: ElevatedButton.styleFrom(
     backgroundColor: RColors.primary,
     padding: const EdgeInsets.symmetric(vertical: 14),
@@ -179,20 +216,4 @@ class _EditProfileState extends State<EditProfile> {
     );
   }
 
-  Widget _editableField(String label, TextEditingController controller) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-      child: TextField(
-        controller: controller,
-        decoration: InputDecoration(
-          labelText: label,
-          labelStyle: const TextStyle(color: kIconColor),
-          border: const OutlineInputBorder(),
-          focusedBorder: OutlineInputBorder(
-            borderSide: BorderSide(color: RColors.primary),
-          ),
-        ),
-      ),
-    );
-  }
 }

@@ -1,7 +1,16 @@
 class ApiConstants {
 
-  static const String baseUrl = 'https://6932fa4ae5a9e342d27181ab.mockapi.io';
 
+  static const String baseUrl = 'http://10.0.2.2:8000/api';
+
+  // Authentication
   static const String users = '/users';
-  static const String customers = '/customers';
+  static const String registerCustomer = '/register/customer';
+  static const String registerAgency = '/register/agency';
+  static const String login = '/login';
+  static const String refreshToken = '/refresh-token';
+  //
+  static const String customerProfile = '/customer/profile';
+  static const String agencyProfile = '/agency/profile';
+
 }

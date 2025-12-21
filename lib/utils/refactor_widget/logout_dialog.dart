@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:vehicle_rental_app/data/repositories/authentication/authentication_repository.dart';
 import 'package:vehicle_rental_app/utils/constants/colors.dart';
 
 import '../../screens/login/login_screen.dart';
@@ -40,11 +41,7 @@ void showLogoutDialog(BuildContext context) {
           ),
           TextButton(
             onPressed: () {
-              Navigator.of(dialogContext).pop(); // Close dialog
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(builder: (_) => const LoginScreen()),
-              );
+              AuthenticationRepository.instance.logout();
             },
             child: Text(
               "نعم",
