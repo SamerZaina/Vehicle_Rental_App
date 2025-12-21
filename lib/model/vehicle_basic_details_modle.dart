@@ -1,14 +1,6 @@
-
+import 'dart:convert';
 
 import 'package:vehicle_rental_app/model/vehicle_brand_modle.dart' show VehicleModel, VehicleBrandModel;
-
-
-// in this class , we have the basic details of the vehicle like :
-    // -> price
-    // -> fuel type
-    // -> doors ....and more , which is common to all vehicle
-
-
 
 class VehicleBasicDetailsModle {
   final int id;
@@ -61,12 +53,40 @@ class VehicleBasicDetailsModle {
       transmission: json['transmission'],
       status: json['status'],
       description: json['description'],
-      isFeatured: json['is_featured'] ?? false, // Added default value
+      isFeatured: json['is_featured'] ?? false,
       rate: json['reviews_avg_rating']?.toString(),
       model: VehicleBrandModel.fromJson(json['model']),
-      imagesPaths: json['images_paths'] != null
-          ? List<String>.from(json['images_paths'])
-          : null,
+      imagesPaths: _parseImagesPaths(json['images_paths']), // Updated
     );
+  }
+
+  // Helper method to parse images_paths
+  static List<String>? _parseImagesPaths(dynamic imagesData) {
+    if (imagesData == null) return null;
+
+    if (imagesData is String) {
+      // If it's a string, check if it's JSON or comma-separated
+      if (imagesData.startsWith('[')) {
+        // It's a JSON string, parse it
+        try {
+          final parsed = jsonDecode(imagesData) as List;
+          return List<String>.from(parsed.map((e) => e.toString()));
+        } catch (e) {
+          // If parsing fails, return as single item list
+          return [imagesData];
+        }
+      } else if (imagesData.contains(',')) {
+        // Comma-separated string
+        return imagesData.split(',').map((e) => e.trim()).toList();
+      } else {
+        // Single string
+        return [imagesData];
+      }
+    } else if (imagesData is List) {
+      // Already a list
+      return List<String>.from(imagesData.map((e) => e.toString()));
+    }
+
+    return null;
   }
 }

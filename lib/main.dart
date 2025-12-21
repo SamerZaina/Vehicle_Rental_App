@@ -20,6 +20,7 @@ void main() async {
   // Get token from storage
   //final token = GetStorage().read('token');
 
+  //final token = await getTokenFromStorage();
   final token = "62|7sPwvifsSi5eztBKdCzCwGDkXNpQ7mSt1rFSI2KJ0ff4ce35";
 
   /// Initialize ApiService (solution to late initialization error)

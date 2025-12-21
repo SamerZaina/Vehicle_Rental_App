@@ -13,6 +13,7 @@ import 'package:vehicle_rental_app/controller/add_new_vehicle/transmission_contr
 import 'package:vehicle_rental_app/controller/add_new_vehicle/vehicle_color_controller.dart';
 import 'package:vehicle_rental_app/controller/add_new_vehicle/vehilce_types_controller.dart';
 import 'package:vehicle_rental_app/controller/add_new_vehicle/brand_modle_controller.dart';
+import 'package:vehicle_rental_app/controller/agency_all_vehicles_controller.dart';
 import 'package:vehicle_rental_app/utils/helpers/helper_functions.dart';
 import 'package:vehicle_rental_app/utils/refactor_widget/drop_down_addvheicle_screen.dart';
 import 'package:vehicle_rental_app/utils/refactor_widget/drop_down_label.dart';
@@ -78,6 +79,8 @@ class _AddNewVehicleState extends State<AddNewVehicle> {
   Get.put(AddNewVehicleController());
   final VehicleStatusController statusController =
   Get.put(VehicleStatusController());
+  final AgencyCarsController agencyCarsController =
+  Get.put(AgencyCarsController());
 
   bool isVehicleTypeDropdownOpen = false;
   bool isBrandDropdownOpen = false;
@@ -396,27 +399,41 @@ class _AddNewVehicleState extends State<AddNewVehicle> {
             ),
             SizedBox(height: 40.h),
 
+
             /// BUTTON
             SizedBox(
               height: 50.h,
-              child: ElevatedButton(
-                onPressed: _saveVehicle,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Theme.of(context).primaryColor,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(14.r),
+              child: Obx(() {
+                return ElevatedButton(
+                  onPressed: addNewVehicleController.isLoading.value ? null : _saveVehicle,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: addNewVehicleController.isLoading.value
+                        ? Colors.grey
+                        : Theme.of(context).primaryColor,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(14.r),
+                    ),
+                    elevation: 0,
                   ),
-                  elevation: 0,
-                ),
-                child: Text(
-                  'إضافة المركبة',
-                  style: TextStyle(
-                    fontSize: 16.sp,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.white,
+                  child: addNewVehicleController.isLoading.value
+                      ? SizedBox(
+                    height: 20.h,
+                    width: 20.h,
+                    child: CircularProgressIndicator(
+                      color: Colors.white,
+                      strokeWidth: 2.0,
+                    ),
+                  )
+                      : Text(
+                    'إضافة المركبة',
+                    style: TextStyle(
+                      fontSize: 16.sp,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.white,
+                    ),
                   ),
-                ),
-              ),
+                );
+              }),
             ),
           ],
         ),
@@ -425,6 +442,7 @@ class _AddNewVehicleState extends State<AddNewVehicle> {
   }
 
   void _saveVehicle() async {
+    // Remove image requirement since API might accept vehicles without images
     if (selectedVehicleType == null ||
         selectedBrandId == null ||
         selectedModelId == null ||
@@ -436,11 +454,10 @@ class _AddNewVehicleState extends State<AddNewVehicle> {
         seatsController.text.isEmpty ||
         doorsController.text.isEmpty ||
         priceController.text.isEmpty ||
-        descriptionController.text.isEmpty ||
-        selectedImagePath == null) {
+        descriptionController.text.isEmpty) {
       Get.snackbar(
         'خطأ',
-        'الرجاء ملء جميع الحقول',
+        'الرجاء ملء جميع الحقول المطلوبة',
         snackPosition: SnackPosition.TOP,
         backgroundColor: Colors.red,
         colorText: Colors.white,
@@ -448,33 +465,59 @@ class _AddNewVehicleState extends State<AddNewVehicle> {
       return;
     }
 
-    final vehicle = CreateVehicleModel(
-      modelId: selectedModelId!,
-      transmission: selectedGear!,
-      color: selectedColor!,
-      fuelType: selectedFuel!,
-      status: selectedStatus!,
-      registrationNumber: registrationNumberController.text.trim(),
-      seats: int.parse(seatsController.text.trim()),
-      doors: int.parse(doorsController.text.trim()),
-      pricePerHour: double.parse(priceController.text.trim()),
-      description: descriptionController.text.trim(),
-      images: [File(selectedImagePath!)],
-    );
+    // Show loading
+    addNewVehicleController.isLoading.value = true;
 
-    final success = await addNewVehicleController.addNewVehicle(vehicle);
-
-    if (success) {
-      Get.snackbar(
-        'تمت الاضافة !',
-        'تم اضافة المركبة بنجاح',
-        snackPosition: SnackPosition.TOP,
-        backgroundColor: Colors.green,
-        colorText: Colors.white,
+    try {
+      final vehicle = CreateVehicleModel(
+        modelId: selectedModelId!,
+        transmission: selectedGear!,
+        color: selectedColor!,
+        fuelType: selectedFuel!,
+        status: selectedStatus!,
+        registrationNumber: registrationNumberController.text.trim(),
+        seats: int.tryParse(seatsController.text.trim()) ?? 0,
+        doors: int.tryParse(doorsController.text.trim()) ?? 0,
+        pricePerHour: double.tryParse(priceController.text.trim()) ?? 0.0,
+        description: descriptionController.text.trim(),
+        images: selectedImagePath != null ? [File(selectedImagePath!)] : null,
       );
 
-      /// Return success to previous screen
-      Get.back(result: true);
+      final success = await addNewVehicleController.addNewVehicle(vehicle);
+
+      if (success) {
+        // Success snackbar
+        Get.snackbar(
+          'تمت الاضافة !',
+          'تم اضافة المركبة بنجاح',
+          snackPosition: SnackPosition.TOP,
+          backgroundColor: Colors.green,
+          colorText: Colors.white,
+          duration: Duration(seconds: 2),
+          icon: Icon(Icons.check_circle, color: Colors.white),
+        );
+
+        // here we make get request to add the vehicle which we already added
+        // to myVehicle list of the agency
+        agencyCarsController.fetchAgencyCars();
+        // Wait a bit before going back to show the snackbar
+        await Future.delayed(Duration(milliseconds: 1500));
+
+        /// Return success to previous screen
+        Get.back(result: true);
+
+      }
+      // If not success, error snackbar is already shown in controller
+    } catch (e) {
+      Get.snackbar(
+        'خطأ',
+        'حدث خطأ أثناء الحفظ: $e',
+        snackPosition: SnackPosition.TOP,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+    } finally {
+      addNewVehicleController.isLoading.value = false;
     }
   }
 

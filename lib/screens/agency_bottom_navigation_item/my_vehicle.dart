@@ -20,8 +20,7 @@ class MyVehicle extends StatelessWidget {
     final dark = RHelperFunctions.isDarkMode(context);
 
     /// ✅ Controller is created once
-    final AgencyCarsController controller =
-    Get.put(AgencyCarsController());
+    final AgencyCarsController controller = Get.put(AgencyCarsController());
 
     return Scaffold(
       backgroundColor: dark ? RColors.black : RColors.white,
@@ -31,16 +30,27 @@ class MyVehicle extends StatelessWidget {
         onPressed: () async {
           final result = await Get.to(() => const AddNewVehicle());
 
-          /// ✅ Refresh list after successful add
+          /// ✅ Refresh list after successful add AND show success message
           if (result == true) {
+            // Show success message
+            Get.snackbar(
+              'تم التحديث',
+              'تم تحديث قائمة المركبات',
+              snackPosition: SnackPosition.TOP,
+              backgroundColor: Colors.green,
+              colorText: Colors.white,
+              duration: Duration(seconds: 2),
+              icon: Icon(Icons.refresh, color: Colors.white),
+            );
+
+            // Refresh the list
             controller.fetchAgencyCars();
           }
         },
         backgroundColor: RColors.primary,
         child: const Icon(Icons.add, color: Colors.white),
       ),
-      floatingActionButtonLocation:
-      FloatingActionButtonLocation.startFloat,
+      floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,
 
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: RSizes.md.w),
@@ -70,12 +80,29 @@ class MyVehicle extends StatelessWidget {
                 /// ERROR
                 if (controller.errorMessage.isNotEmpty) {
                   return Center(
-                    child: Text(
-                      controller.errorMessage.value,
-                      style: TextStyle(
-                        color: Colors.red,
-                        fontSize: 14.sp,
-                      ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.error_outline,
+                          color: Colors.red,
+                          size: 50.sp,
+                        ),
+                        SizedBox(height: 16.h),
+                        Text(
+                          controller.errorMessage.value,
+                          style: TextStyle(
+                            color: Colors.red,
+                            fontSize: 14.sp,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                        SizedBox(height: 16.h),
+                        ElevatedButton(
+                          onPressed: () => controller.fetchAgencyCars(),
+                          child: Text('Retry'),
+                        ),
+                      ],
                     ),
                   );
                 }
@@ -83,14 +110,23 @@ class MyVehicle extends StatelessWidget {
                 /// EMPTY
                 if (controller.vehicles.isEmpty) {
                   return Center(
-                    child: Text(
-                      'No vehicles available',
-                      style: TextStyle(
-                        fontSize: 14.sp,
-                        color: dark
-                            ? RColors.white
-                            : RColors.textPrimary,
-                      ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.directions_car_outlined,
+                          size: 60.sp,
+                          color: dark ? RColors.white : RColors.textPrimary,
+                        ),
+                        SizedBox(height: 16.h),
+                        Text(
+                          'No vehicles available',
+                          style: TextStyle(
+                            fontSize: 16.sp,
+                            color: dark ? RColors.white : RColors.textPrimary,
+                          ),
+                        ),
+                      ],
                     ),
                   );
                 }
@@ -100,34 +136,64 @@ class MyVehicle extends StatelessWidget {
                   itemCount: controller.vehicles.length,
                   padding: EdgeInsets.only(bottom: 100.h),
                   itemBuilder: (context, index) {
-                    final vehicle =
-                    controller.vehicles[index];
+                    try {
+                      final vehicle = controller.vehicles[index];
 
-                    // Safely handle all null values
-                    final brandName = vehicle.model.brand?.name ?? 'Unknown';
-                    final modelName = vehicle.model.name;
-                    final vehicleType = vehicle.model.brand?.type ?? 'سيارة';
-                    final rating = vehicle.rate;
-                    final seats = vehicle.seats;
-                    final price = vehicle.pricePerHour;
-                    final status = vehicle.status;
-                    final images = vehicle.imagesPaths ?? [];
+                      // Safely extract all values with null checks
+                      final brandName = vehicle.model.brand?.name ?? 'Unknown';
+                      final modelName = vehicle.model.name;
+                      final vehicleType = vehicle.model.brand?.type ?? 'سيارة';
+                      final rating = vehicle.rate;
+                      final seats = vehicle.seats;
+                      final price = vehicle.pricePerHour;
+                      final status = vehicle.status;
+                      final fullName = '$brandName $modelName';
 
-                    return Padding(
-                      padding: EdgeInsets.only(bottom: 12.h),
-                      child: VehicleItemCard(
-                        image: images.isNotEmpty
-                            ? buildImageUrl(images.first)
-                            : _vehicleImage(vehicleType),
-                        name: '$brandName $modelName',
-                        rating: _vehicleRate(rating),
-                        seats: '$seats مقاعد ',
-                        price: '$price / ساعة',
-                        status: status == 'available'
-                            ? 'نشطة'
-                            : 'غير نشطة',
-                      ),
-                    );
+                      // Get appropriate image URL
+                      String imageUrl = _getVehicleImage(
+                        imagesPaths: vehicle.imagesPaths,
+                        vehicleType: vehicleType,
+                      );
+
+                      return Padding(
+                        padding: EdgeInsets.only(bottom: 12.h),
+                        child: VehicleItemCard(
+                          image: imageUrl,
+                          name: fullName,
+                          rating: _vehicleRate(rating),
+                          seats: '$seats مقاعد ',
+                          price: '$price / ساعة',
+                          status: status == 'available' ? 'نشطة' : 'غير نشطة',
+                        ),
+                      );
+                    } catch (e, stackTrace) {
+                      // If there's an error rendering a vehicle, show error card
+                      print('Error rendering vehicle at index $index: $e');
+                      print('Stack trace: $stackTrace');
+                      return Padding(
+                        padding: EdgeInsets.only(bottom: 12.h),
+                        child: Container(
+                          padding: EdgeInsets.all(16.w),
+                          decoration: BoxDecoration(
+                            color: Colors.red.shade50,
+                            borderRadius: BorderRadius.circular(8.w),
+                            border: Border.all(color: Colors.red.shade200),
+                          ),
+                          child: Row(
+                            children: [
+                              Icon(Icons.error_outline, color: Colors.red),
+                              SizedBox(width: 8.w),
+                              Expanded(
+                                child: Text(
+                                  'Error loading vehicle data',
+                                  style: TextStyle(color: Colors.red),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    }
                   },
                 );
               }),
@@ -137,24 +203,50 @@ class MyVehicle extends StatelessWidget {
       ),
     );
   }
-}
 
-/// 🔹 Vehicle image selector
-String _vehicleImage(String type) {
-  if (type == "سيارة") return RImages.car2;
-  if (type == "باص") return RImages.bus;
-  if (type == "دراجة نارية") return RImages.motorcycle;
-  return RImages.car1;
-}
+  /// Get vehicle image with priority:
+  /// 1. First uploaded image (if available and valid)
+  /// 2. Default asset image based on vehicle type
+  String _getVehicleImage({
+    required List<String>? imagesPaths,
+    required String vehicleType,
+  }) {
+    if (imagesPaths == null || imagesPaths.isEmpty) {
+      return _vehicleImage(vehicleType);
+    }
 
-/// 🔹 Rating text
-String _vehicleRate(String? rate) {
-  if (rate == null || rate == 'null' || rate.isEmpty) {
-    return "لم تقيم بعد";
+    final rawPath = imagesPaths.first;
+
+    // there's an error when it's try to show images of the car
+    // that because the Your API returns image paths like this
+    // ["cars\/cbxpvrAjUE4WzQiYmeB9gGut2PzeYiMLd8bK7Npy.jpg"]
+    // so below the solution
+    final cleanPath = rawPath
+        .replaceAll('\\/', '/') // 🔥 THIS IS THE KEY FIX
+        .replaceAll('"', '')
+        .trim();
+
+    final imageUrl = 'http://10.0.2.2:8000/storage/$cleanPath';
+
+    debugPrint('🖼 Vehicle Image URL: $imageUrl');
+
+    return imageUrl;
   }
-  return rate;
-}
 
-String buildImageUrl(String path) {
-  return 'http://10.0.2.2:8000/storage/$path';
+
+  /// 🔹 Vehicle image selector (returns asset paths)
+  String _vehicleImage(String type) {
+    if (type == "سيارة") return RImages.car2;
+    if (type == "باص") return RImages.bus;
+    if (type == "دراجة نارية") return RImages.motorcycle;
+    return RImages.car1;
+  }
+
+  /// 🔹 Rating text
+  String _vehicleRate(String? rate) {
+    if (rate == null || rate == 'null' || rate.isEmpty) {
+      return "لم تقيم بعد";
+    }
+    return rate;
+  }
 }
