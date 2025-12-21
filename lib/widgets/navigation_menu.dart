@@ -125,6 +125,9 @@ class NavigationController extends GetxController {
   void changePage(int index) {
     selectedIndex.value = index;
   }
+  void getTo(int index){
+    Get.to(screens[index]);
+  }
 
   void goToHome() {
     selectedIndex.value = 0;

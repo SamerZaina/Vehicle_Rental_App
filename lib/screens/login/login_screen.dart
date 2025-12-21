@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:vehicle_rental_app/data/controllers/login/login_controller.dart';
 import 'package:vehicle_rental_app/screens/agency_bottom_navigation_item/bottom_navigation.dart';
 import 'package:vehicle_rental_app/screens/bottom_navigation_items/home_screen.dart';
 import 'package:vehicle_rental_app/screens/bottom_navigation_items/profile/profile_screen.dart';
@@ -27,17 +28,15 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  final emailController = TextEditingController();
-  final passwordController = TextEditingController();
-  GlobalKey<FormState> loginFormKey = GlobalKey<FormState>();
-  final hidePassword = true.obs;
-  final rememberMe = false.obs;
+  final controller = Get.put(LoginController());
 
   @override
   Widget build(BuildContext context) {
     final dark = RHelperFunctions.isDarkMode(context);
     return Scaffold(
-      appBar: dark? RAppbarTheme.darkAppBarTheme(): RAppbarTheme.lightAppBarTheme(),
+      appBar: dark
+          ? RAppbarTheme.darkAppBarTheme()
+          : RAppbarTheme.lightAppBarTheme(),
 
       // backgroundColor: dark ? RColors.blackF : RColors.primaryBackground,
       body: SafeArea(
@@ -53,12 +52,13 @@ class _LoginScreenState extends State<LoginScreen> {
                 children: [
                   // Page Title
                   Container(
-                    margin: EdgeInsets.fromLTRB(0, 50, 0, 0),
+                    margin: EdgeInsets.fromLTRB(0, 50, 0, 5),
                     width: 290.w,
-                    height: 70.h,
+                    height: 80.h,
                     child: Text(
                       RTexts.loginWelcome,
-                      style: Theme.of(context).textTheme.headlineMedium!.copyWith(
+                      style: Theme.of(context).textTheme.headlineMedium!
+                          .copyWith(
                         fontWeight: FontWeight.bold,
                         fontSize: 30,
                         color: dark ? RColors.primary40 : RColors.primary,
@@ -67,12 +67,12 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   SizedBox(height: RSizes.spaceBtwSections.h * 1.6),
                   Form(
-                    key:loginFormKey ,
+                    key: controller.loginFormKey,
                     child: Column(
                       children: [
                         // Email Field
                         LoginTextFields(
-                          controller: emailController,
+                          controller: controller.emailController,
                           hintText: RTexts.loginEmail,
                           icon: CupertinoIcons.mail,
                           validator: (value) => RValidator.validateEmail(value),
@@ -80,42 +80,43 @@ class _LoginScreenState extends State<LoginScreen> {
                         // Password Field
                         Obx(
                               () => LoginTextFields(
-                            controller: passwordController,
+                            controller: controller.passwordController,
                             hintText: RTexts.loginPassword,
                             icon: CupertinoIcons.lock,
-                            obscureText: hidePassword.value,
+                            obscureText: controller.hidePassword.value,
                             suffixIcon: IconButton(
                               icon: Icon(
-                                hidePassword.value
+                                controller.hidePassword.value
                                     ? CupertinoIcons.eye_slash
                                     : CupertinoIcons.eye,
                               ),
-                              onPressed: () => hidePassword.value = !hidePassword.value,
+                              onPressed: () => controller.hidePassword.value =
+                              !controller.hidePassword.value,
                               color: RColors.grey,
                             ),
-                            validator: (value) => RValidator.validateEmail(value),
+                            validator: (value) =>
+                                RValidator.validatePassword(value),
                           ),
                         ),
                       ],
                     ),
                   ),
-
                   // Remember me and forgot password?
                   SizedBox(
                     width: double.infinity.w,
                     child: Row(
                       children: [
                         Obx(
-                          () => Checkbox(
+                              () => Checkbox(
                             checkColor: RColors.light,
                             activeColor: RColors.primary40,
                             side: BorderSide(
                               width: 1.w,
                               color: RColors.primary40,
                             ),
-                            value: rememberMe.value,
-                            onChanged: (value) =>
-                                rememberMe.value = !rememberMe.value,
+                            value: controller.rememberMe.value,
+                            onChanged: (value) => controller.rememberMe.value =
+                            !controller.rememberMe.value,
                           ),
                         ),
                         Text(
@@ -149,15 +150,17 @@ class _LoginScreenState extends State<LoginScreen> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        LoginSignButton(title: RTexts.loginBtn, onPressed: () {
-                          // BottomNavigation -> for agency home
-                          // NavigationMenu -> for user home
-                          Get.to(BottomNavigation());
-                        }),
+                        LoginSignButton(
+                          title: RTexts.loginBtn,
+                          onPressed: () => controller.loginUser(),
+                        ),
                         SizedBox(height: RSizes.spaceBtwItems),
-                        SecondButton(title: RTexts.signupBtn, onPressed: () {
-                          Get.to(RegisterScreen());
-                        }),
+                        SecondButton(
+                          title: RTexts.signupBtn,
+                          onPressed: () {
+                            Get.off(() => RegisterScreen());
+                          },
+                        ),
                       ],
                     ),
                   ),

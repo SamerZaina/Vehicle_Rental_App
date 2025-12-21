@@ -3,7 +3,9 @@ import 'package:get/get.dart';
 
 import '../api_service/api_service.dart';
 import 'package:vehicle_rental_app/model/vehicle_basic_details_modle.dart';
-import 'package:vehicle_rental_app/model/vehicle_response.dart';
+
+import '../model/vehicle_response.dart';
+
 
 class AgencyCarsController extends GetxController {
   final ApiService apiService = ApiService();
@@ -32,6 +34,9 @@ class AgencyCarsController extends GetxController {
 
       final response = await apiService.dio.get(carsUrl);
 
+      // Log the response for debugging
+      print('Response data: ${response.data}');
+
       final allVehicleResponse =
       AllVehicleResponse.fromJson(response.data);
 
@@ -43,12 +48,14 @@ class AgencyCarsController extends GetxController {
       }
 
     } on DioException catch (e) {
+      print('Dio Error: $e');
       errorMessage.value =
           e.response?.data['message']?.toString() ??
-              'Server error occurred';
+              'Server error occurred: ${e.message}';
 
     } catch (e) {
-      errorMessage.value = 'Unexpected error occurred';
+      print('Unexpected Error: $e');
+      errorMessage.value = 'Unexpected error occurred: $e';
 
     } finally {
       isLoading.value = false;

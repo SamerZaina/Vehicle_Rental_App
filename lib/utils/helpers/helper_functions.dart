@@ -4,6 +4,8 @@ import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:intl/intl.dart';
 
+import '../../widgets/loader.dart';
+
 class RHelperFunctions{
   static Color? getColor(String value){
     if(value == 'Green'){
@@ -102,7 +104,7 @@ class RHelperFunctions{
         builder: (_)=> PopScope(
           canPop: false,
           child: Center(
-         //   child: LoaderWidget(text: text, animation: animation,)
+         child: LoaderWidget(text: text, animation: animation,)
             ),
         )
     );

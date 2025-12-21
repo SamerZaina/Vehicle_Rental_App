@@ -1,4 +1,3 @@
-import 'dart:ffi';
 
 class RValidator {
   // Empty Text Validation

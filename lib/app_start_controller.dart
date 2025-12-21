@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_state_manager/src/simple/get_controllers.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:vehicle_rental_app/data/repositories/authentication/authentication_repository.dart';
 import 'package:vehicle_rental_app/screens/login/login_screen.dart';
 import 'package:vehicle_rental_app/screens/on_boarding/onBoarding.dart';
 
@@ -29,7 +30,7 @@ class AppStartController extends GetxController {
     if (isFirstTime) {
       Get.offAll(() => const Onboarding());
     } else {
-      Get.offAll(() => LoginScreen());
+      AuthenticationRepository.instance.redirect();
     }
   }
 

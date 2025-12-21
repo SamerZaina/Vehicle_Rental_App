@@ -12,7 +12,8 @@ class RImages {
   static const String facebookIcon = "assets/images/icons/facebook_icon.png";
   static const String visaCard = "assets/images/icons/visaCard.png";
   static const String paypal = "assets/images/icons/paypal.png";
-
+ static const String loader = "assets/images/icons/loading.json";
+ static const String user = 'assets/images/icons/user.png';
   static const String car1 = "assets/images/cars/car1.png";
   static const String car2= "assets/images/cars/car2.png";
   static const String car3= "assets/images/cars/car3.png";

@@ -3,14 +3,13 @@
 
 // here we have modle for the model on the vehicle :
 // if we have bmw , it's modle is m4 for example
-import 'package:vehicle_rental_app/model/vehicle_brand_company.dart';
-
+// vehicle_brand_modle.dart
 class VehicleBrandModel {
   final int id;
   final int brandId;
   final String name;
   final String year;
-  final VehicleBrandCompany brand;
+  final Brand brand; // Changed from VehicleBrandModel? to Brand
 
   VehicleBrandModel({
     required this.id,
@@ -26,7 +25,30 @@ class VehicleBrandModel {
       brandId: json['brand_id'],
       name: json['name'],
       year: json['year'],
-      brand: VehicleBrandCompany.fromJson(json['brand']),
+      brand: Brand.fromJson(json['brand']), // Extract brand data
+    );
+  }
+}
+
+class Brand {
+  final int id;
+  final String name;
+  final String type;
+  final String country;
+
+  Brand({
+    required this.id,
+    required this.name,
+    required this.type,
+    required this.country,
+  });
+
+  factory Brand.fromJson(Map<String, dynamic> json) {
+    return Brand(
+      id: json['id'],
+      name: json['name'],
+      type: json['type'],
+      country: json['country'],
     );
   }
 }

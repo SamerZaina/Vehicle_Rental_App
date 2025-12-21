@@ -8,6 +8,8 @@ import 'package:vehicle_rental_app/model/vehicle_brand_modle.dart' show VehicleM
     // -> fuel type
     // -> doors ....and more , which is common to all vehicle
 
+
+
 class VehicleBasicDetailsModle {
   final int id;
   final int agencyId;
@@ -23,7 +25,7 @@ class VehicleBasicDetailsModle {
   final String? description;
   final bool isFeatured;
   final VehicleBrandModel model;
-  final String? rate ;
+  final String? rate;
   final List<String>? imagesPaths;
 
   VehicleBasicDetailsModle({
@@ -59,8 +61,8 @@ class VehicleBasicDetailsModle {
       transmission: json['transmission'],
       status: json['status'],
       description: json['description'],
-      isFeatured: json['is_featured'],
-      rate: json['reviews_avg_rating'],
+      isFeatured: json['is_featured'] ?? false, // Added default value
+      rate: json['reviews_avg_rating']?.toString(),
       model: VehicleBrandModel.fromJson(json['model']),
       imagesPaths: json['images_paths'] != null
           ? List<String>.from(json['images_paths'])
