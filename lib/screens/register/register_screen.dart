@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:vehicle_rental_app/screens/login/login_screen.dart';
+import 'package:vehicle_rental_app/screens/register/agency_register_screen.dart';
 import 'package:vehicle_rental_app/widgets/RAppbar.dart';
 import 'package:vehicle_rental_app/widgets/divider_social_login.dart';
 import '../../core/api_constants.dart';
@@ -124,7 +125,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
                             ),
                             child: Padding(
-                              padding: const EdgeInsets.fromLTRB(0,14,14,14),
+                              padding:  EdgeInsets.fromLTRB(0.w,14.h,11.w,14.h),
                               child: Row(
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
@@ -145,6 +146,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               ),
                             ),
                           ),
+
                       // Buttons
                       Padding(
                         padding: const EdgeInsets.all(8.0),
@@ -164,7 +166,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             SizedBox(height: RSizes.spaceBtwItems),
 
                             SecondButton(title: RTexts.agencySignupBtn, onPressed: () async {
-                              await createUserTest();
+                              await Get.to(AgencyRegister());
                             }),
                           ],
                         ),

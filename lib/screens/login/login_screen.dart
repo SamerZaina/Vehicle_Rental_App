@@ -12,6 +12,7 @@ import 'package:vehicle_rental_app/utils/helpers/helper_functions.dart';
 import 'package:vehicle_rental_app/utils/validators/validation.dart';
 import 'package:vehicle_rental_app/widgets/divider_social_login.dart';
 import 'package:vehicle_rental_app/widgets/login_text_fields.dart';
+import 'package:vehicle_rental_app/widgets/navigation_menu.dart';
 
 import '../../utils/constants/sizes.dart';
 import '../../utils/constants/text_strings.dart';
@@ -149,6 +150,8 @@ class _LoginScreenState extends State<LoginScreen> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         LoginSignButton(title: RTexts.loginBtn, onPressed: () {
+                          // BottomNavigation -> for agency home
+                          // NavigationMenu -> for user home
                           Get.to(BottomNavigation());
                         }),
                         SizedBox(height: RSizes.spaceBtwItems),

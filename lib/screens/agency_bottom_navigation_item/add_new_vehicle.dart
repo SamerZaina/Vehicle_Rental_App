@@ -1,14 +1,25 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:file_picker/file_picker.dart';
-import 'package:vehicle_rental_app/utils/constants/colors.dart';
+
+import 'package:vehicle_rental_app/controller/add_new_vehicle/brand_controller.dart';
+import 'package:vehicle_rental_app/controller/add_new_vehicle/fuel_type_controller.dart';
+import 'package:vehicle_rental_app/controller/add_new_vehicle/status_controller.dart';
+import 'package:vehicle_rental_app/controller/add_new_vehicle/transmission_controller.dart';
+import 'package:vehicle_rental_app/controller/add_new_vehicle/vehicle_color_controller.dart';
+import 'package:vehicle_rental_app/controller/add_new_vehicle/vehilce_types_controller.dart';
+import 'package:vehicle_rental_app/controller/add_new_vehicle/brand_modle_controller.dart';
 import 'package:vehicle_rental_app/utils/helpers/helper_functions.dart';
 import 'package:vehicle_rental_app/utils/refactor_widget/drop_down_addvheicle_screen.dart';
 import 'package:vehicle_rental_app/utils/refactor_widget/drop_down_label.dart';
+import '../../controller/add_new_vehicle/create_new_vehilce_controller.dart';
+import '../../model/add_new_vehicle_modles/create_new_vehicle_model.dart';
+import '../../utils/constants/image_strings.dart';
 import '../../widgets/RAppbar.dart';
-import 'package:vehicle_rental_app/utils/constants/brands_models_array.dart';
 
 class AddNewVehicle extends StatefulWidget {
   const AddNewVehicle({super.key});
@@ -18,59 +29,63 @@ class AddNewVehicle extends StatefulWidget {
 }
 
 class _AddNewVehicleState extends State<AddNewVehicle> {
+  String? selectedVehicleType;
+
   String? selectedBrand;
+  int? selectedBrandId;
+
   String? selectedModel;
+  int? selectedModelId;
+
   String? selectedGear;
   String? selectedColor;
   String? selectedFuel;
-  String? selectedVehicleType;
+  String? selectedStatus;
 
-  TextEditingController priceController = TextEditingController();
-  TextEditingController seatsController = TextEditingController();
-  TextEditingController imageController = TextEditingController();
-  TextEditingController descriptionController = TextEditingController(); // New controller for description
+  final TextEditingController registrationNumberController =
+  TextEditingController();
+  final TextEditingController seatsController = TextEditingController();
+  final TextEditingController doorsController = TextEditingController();
+  final TextEditingController priceController = TextEditingController();
+  final TextEditingController descriptionController = TextEditingController();
+  final TextEditingController imageController = TextEditingController();
 
   String? selectedImagePath;
 
-  // Search controllers for each dropdown
-  TextEditingController brandSearchController = TextEditingController();
-  TextEditingController modelSearchController = TextEditingController();
-  TextEditingController gearSearchController = TextEditingController();
-  TextEditingController colorSearchController = TextEditingController();
-  TextEditingController fuelSearchController = TextEditingController();
-  TextEditingController vehicleTypeSearchController = TextEditingController();
+  /// Search controllers
+  final TextEditingController brandSearchController = TextEditingController();
+  final TextEditingController modelSearchController = TextEditingController();
+  final TextEditingController gearSearchController = TextEditingController();
+  final TextEditingController colorSearchController = TextEditingController();
+  final TextEditingController fuelSearchController = TextEditingController();
+  final TextEditingController stautsSearchController = TextEditingController();
+  final TextEditingController vehicleTypeSearchController =
+  TextEditingController();
 
-  final List<String> gearTypes = ['عادي', 'أتوماتيك'];
-  final List<String> colors = [
-    'أحمر',     // Red
-    'أزرق',     // Blue
-    'أسود',     // Black
-    'أبيض',     // White
-    'فضي',      // Silver
-    'رمادي',    // Gray
-    'أخضر',     // Green
-    'برتقالي',  // Orange
-    'بنفسجي',   // Purple
-    'ذهبي',     // Gold
-    'بني',      // Brown
-    'زهري',     // Pink
-    'كحلي',     // Navy
-    'تركوازي',  // Turquoise
-    'فيروزي',   // Teal
-    'لافندر',   // Lavender
-    'ليموني',   // Lemon Yellow
-  ];
+  /// Controllers
+  final TransmissionController transmissionController =
+  Get.put(TransmissionController());
+  final FuelTypeController fuelTypeController =
+  Get.put(FuelTypeController());
+  final VehicleColorController vehicleColorController =
+  Get.put(VehicleColorController());
+  final VehicleTypeController vehicleTypeController =
+  Get.put(VehicleTypeController());
+  final BrandController brandController = Get.put(BrandController());
+  final VehicleModelController vehicleModelController =
+  Get.put(VehicleModelController());
+  final AddNewVehicleController addNewVehicleController =
+  Get.put(AddNewVehicleController());
+  final VehicleStatusController statusController =
+  Get.put(VehicleStatusController());
 
-  final List<String> fuelTypes = ['بنزين', 'ديزل', 'كهرباء', 'هايبرد'];
-  final List<String> vehicleTypes = ['سيارة', 'باص', 'دراجة نارية'];
-
-  // Track dropdown open states
+  bool isVehicleTypeDropdownOpen = false;
   bool isBrandDropdownOpen = false;
   bool isModelDropdownOpen = false;
   bool isGearDropdownOpen = false;
   bool isColorDropdownOpen = false;
   bool isFuelDropdownOpen = false;
-  bool isVehicleTypeDropdownOpen = false;
+  bool isStatusDropdownOpen = false;
 
   Future<void> pickImage() async {
     final result = await FilePicker.platform.pickFiles(type: FileType.image);
@@ -82,32 +97,33 @@ class _AddNewVehicleState extends State<AddNewVehicle> {
     }
   }
 
-  // Get available models based on selected vehicle type and brand
-  List<String> getAvailableModels() {
-    if (selectedVehicleType == null || selectedBrand == null) {
-      return [];
-    }
-    return BrandsModlesArray().getModels(selectedBrand, selectedVehicleType);
-  }
+  InputDecoration _inputDecoration(String hint) {
+    final dark = RHelperFunctions.isDarkMode(context);
 
-  // Filter list based on search query
-  List<String> filterList(List<String> list, String query) {
-    if (query.isEmpty) return list;
-    return list
-        .where((item) => item.toLowerCase().contains(query.toLowerCase()))
-        .toList();
-  }
-
-  @override
-  void dispose() {
-    brandSearchController.dispose();
-    modelSearchController.dispose();
-    gearSearchController.dispose();
-    colorSearchController.dispose();
-    fuelSearchController.dispose();
-    vehicleTypeSearchController.dispose();
-    descriptionController.dispose(); // Dispose the new controller
-    super.dispose();
+    return InputDecoration(
+      hintText: hint,
+      hintStyle: TextStyle(fontSize: 14.sp),
+      filled: true,
+      fillColor: dark ? Colors.grey.shade900 : Colors.grey.shade100,
+      contentPadding:
+      EdgeInsets.symmetric(horizontal: 14.w, vertical: 14.h),
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12.r),
+        borderSide: BorderSide.none,
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12.r),
+        borderSide:
+        BorderSide(color: dark ? Colors.grey.shade700 : Colors.grey.shade300),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12.r),
+        borderSide: BorderSide(
+          color: Theme.of(context).primaryColor,
+          width: 1.4,
+        ),
+      ),
+    );
   }
 
   @override
@@ -130,396 +146,344 @@ class _AddNewVehicleState extends State<AddNewVehicle> {
         child: ListView(
           padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 20.h),
           children: [
-
-
-
-
-            /// BRAND DROPDOWN
-            dropdownLabel('اختر نوع السيارة'),
-            SizedBox(height: 8.h),
-          searchableDropdown(
-            items: BrandsModlesArray().brands, // list of brands
-            selectedValue: selectedBrand, // currently selected brand
-            onSelected: (String value) {
-              setState(() {
-                selectedBrand = value; // update selected brand
-                selectedModel = null; // reset dependent dropdowns
-                selectedVehicleType = null;
-                isBrandDropdownOpen = false; // close dropdown
-                brandSearchController.clear(); // clear search
-              });
-            },
-            searchController: brandSearchController, // search controller
-            hintText: 'اختر الماركة', // hint text
-            isDropdownOpen: isBrandDropdownOpen, // dropdown open state
-            onTap: () {
-              setState(() {
-                isBrandDropdownOpen = !isBrandDropdownOpen; // toggle dropdown
-                if (isBrandDropdownOpen) {
-                  // close other dropdowns
-                  isModelDropdownOpen = false;
-                  isGearDropdownOpen = false;
-                  isColorDropdownOpen = false;
-                  isFuelDropdownOpen = false;
-                  isVehicleTypeDropdownOpen = false;
-                }
-              });
-            },
-            refresh: () => setState(() {}), // refresh UI when typing in search
-          ),
-          SizedBox(height: 20.h),
-
-            /// VEHICLE TYPE DROPDOWN
+            /// VEHICLE TYPE
             dropdownLabel('نوع المركبة'),
             SizedBox(height: 8.h),
-        searchableDropdown(
-          items: selectedBrand != null
-              ? BrandsModlesArray().getVehicleTypesForBrand(selectedBrand!)
-              : vehicleTypes, // dynamic list based on selected brand
-          selectedValue: selectedVehicleType, // currently selected vehicle type
-          onSelected: (String value) {
-            setState(() {
-              selectedVehicleType = value; // update selected value
-              selectedModel = null; // reset dependent dropdown
-              isVehicleTypeDropdownOpen = false; // close dropdown
-              vehicleTypeSearchController.clear(); // clear search
-            });
-          },
-          searchController: vehicleTypeSearchController, // search controller
-          hintText: 'اختر نوع المركبة', // hint text
-          isDropdownOpen: isVehicleTypeDropdownOpen, // dropdown open state
-          onTap: () {
-            setState(() {
-              isVehicleTypeDropdownOpen = !isVehicleTypeDropdownOpen; // toggle dropdown
-              if (isVehicleTypeDropdownOpen) {
-                // close other dropdowns
-                isBrandDropdownOpen = false;
-                isModelDropdownOpen = false;
-                isGearDropdownOpen = false;
-                isColorDropdownOpen = false;
-                isFuelDropdownOpen = false;
+            Obx(() {
+              if (vehicleTypeController.isLoading.value) {
+                return const Center(child: CircularProgressIndicator());
               }
-            });
-          },
-          refresh: () => setState(() {}), // refresh UI when search text changes
-        )
-        ,
+              return searchableDropdown(
+                items: vehicleTypeController.carTypes,
+                selectedValue: selectedVehicleType,
+                onSelected: (value) {
+                  setState(() {
+                    selectedVehicleType = value;
+                    selectedBrand = null;
+                    selectedBrandId = null;
+                    selectedModel = null;
+                    selectedModelId = null;
+                    isVehicleTypeDropdownOpen = false;
+                  });
+                  brandController.fetchBrands(value);
+                },
+                searchController: vehicleTypeSearchController,
+                hintText: 'اختر نوع المركبة',
+                isDropdownOpen: isVehicleTypeDropdownOpen,
+                onTap: () => setState(() =>
+                isVehicleTypeDropdownOpen = !isVehicleTypeDropdownOpen),
+                refresh: () => setState(() {}),
+              );
+            }),
             SizedBox(height: 20.h),
 
-            /// MODEL DROPDOWN
-            dropdownLabel('اختر موديل السيارة'),
+            /// BRAND
+            dropdownLabel('اختر الماركة'),
             SizedBox(height: 8.h),
-        searchableDropdown(
-          items: getAvailableModels(), // list of available models
-          selectedValue: selectedModel, // currently selected model
-          onSelected: (String value) {
-            setState(() {
-              selectedModel = value; // update selected model
-              isModelDropdownOpen = false; // close dropdown
-              modelSearchController.clear(); // clear search
-            });
-          },
-          searchController: modelSearchController, // search controller
-          hintText: 'اختر الموديل', // hint text
-          isDropdownOpen: isModelDropdownOpen, // dropdown open state
-          onTap: () {
-            if (selectedBrand != null && selectedVehicleType != null) {
-              setState(() {
-                isModelDropdownOpen = !isModelDropdownOpen; // toggle dropdown
-                if (isModelDropdownOpen) {
-                  // close other dropdowns
-                  isBrandDropdownOpen = false;
+            Obx(() {
+              if (brandController.isLoading.value) {
+                return const Center(child: CircularProgressIndicator());
+              }
+              return searchableDropdown(
+                items: brandController.brands.map((e) => e.name).toList(),
+                selectedValue: selectedBrand,
+                onSelected: (value) {
+                  final brand = brandController.brands
+                      .firstWhere((b) => b.name == value);
+
+                  setState(() {
+                    selectedBrand = brand.name;
+                    selectedBrandId = brand.id;
+                    selectedModel = null;
+                    selectedModelId = null;
+                    isBrandDropdownOpen = false;
+                  });
+
+                  vehicleModelController.fetchModels(
+                    selectedVehicleType!,
+                    brand.id,
+                  );
+                },
+                searchController: brandSearchController,
+                hintText: 'اختر الماركة',
+                isDropdownOpen: isBrandDropdownOpen,
+                onTap: () =>
+                    setState(() => isBrandDropdownOpen = !isBrandDropdownOpen),
+                refresh: () => setState(() {}),
+              );
+            }),
+            SizedBox(height: 20.h),
+
+            /// MODEL
+            dropdownLabel('اختر الموديل'),
+            SizedBox(height: 8.h),
+            Obx(() {
+              if (vehicleModelController.isLoading.value) {
+                return const Center(child: CircularProgressIndicator());
+              }
+              return searchableDropdown(
+                items: vehicleModelController.models.map((e) => e.name).toList(),
+                selectedValue: selectedModel,
+                onSelected: (value) {
+                  final model = vehicleModelController.models
+                      .firstWhere((m) => m.name == value);
+
+                  setState(() {
+                    selectedModel = model.name;
+                    selectedModelId = model.id;
+                    isModelDropdownOpen = false;
+                  });
+                },
+                searchController: modelSearchController,
+                hintText: 'اختر الموديل',
+                isDropdownOpen: isModelDropdownOpen,
+                onTap: () =>
+                    setState(() => isModelDropdownOpen = !isModelDropdownOpen),
+                refresh: () => setState(() {}),
+              );
+            }),
+            SizedBox(height: 20.h),
+
+            /// TRANSMISSION
+            dropdownLabel('نوع القير'),
+            searchableDropdown(
+              items: transmissionController.transmissions,
+              selectedValue: selectedGear,
+              onSelected: (value) {
+                setState(() {
+                  selectedGear = value;
                   isGearDropdownOpen = false;
+                });
+              },
+              searchController: gearSearchController,
+              hintText: 'اختر نوع القير',
+              isDropdownOpen: isGearDropdownOpen,
+              onTap: () =>
+                  setState(() => isGearDropdownOpen = !isGearDropdownOpen),
+              refresh: () => setState(() {}),
+            ),
+            SizedBox(height: 20.h),
+
+            /// COLOR
+            dropdownLabel('لون المركبة'),
+            searchableDropdown(
+              items: vehicleColorController.colors,
+              selectedValue: selectedColor,
+              onSelected: (value) {
+                setState(() {
+                  selectedColor = value;
                   isColorDropdownOpen = false;
-                  isFuelDropdownOpen = false;
-                  isVehicleTypeDropdownOpen = false;
-                }
-              });
-            }
-          },
-          refresh: () => setState(() {}), // refresh UI when typing in search
-        )
-        ,SizedBox(height: 20.h),
+                });
+              },
+              searchController: colorSearchController,
+              hintText: 'اختر اللون',
+              isDropdownOpen: isColorDropdownOpen,
+              onTap: () =>
+                  setState(() => isColorDropdownOpen = !isColorDropdownOpen),
+              refresh: () => setState(() {}),
+            ),
+            SizedBox(height: 20.h),
 
-            /// GEAR DROPDOWN
-            dropdownLabel('اختر نوع القير'),
-            SizedBox(height: 8.h),
-        searchableDropdown(
-          items: gearTypes, // list of gear types
-          selectedValue: selectedGear, // currently selected gear
-          onSelected: (String value) {
-            setState(() {
-              selectedGear = value; // update selected gear
-              isGearDropdownOpen = false; // close dropdown
-              gearSearchController.clear(); // clear search
-            });
-          },
-          searchController: gearSearchController, // search controller
-          hintText: 'اختر نوع القير', // hint text
-          isDropdownOpen: isGearDropdownOpen, // dropdown open state
-          onTap: () {
-            setState(() {
-              isGearDropdownOpen = !isGearDropdownOpen; // toggle dropdown
-              if (isGearDropdownOpen) {
-                // close other dropdowns
-                isBrandDropdownOpen = false;
-                isModelDropdownOpen = false;
-                isColorDropdownOpen = false;
-                isFuelDropdownOpen = false;
-                isVehicleTypeDropdownOpen = false;
-              }
-            });
-          },
-          refresh: () => setState(() {}), // refresh UI when typing in search
-        )
-        , SizedBox(height: 20.h),
-
-            /// COLOR DROPDOWN
-            dropdownLabel('اختر لون السيارة'),
-            SizedBox(height: 8.h),
-          searchableDropdown(
-            items: colors, // your list of colors
-            selectedValue: selectedColor, // the currently selected color
-            onSelected: (String value) {
-              setState(() {
-                selectedColor = value; // update selected value
-                isColorDropdownOpen = false; // close dropdown
-                colorSearchController.clear(); // clear search
-              });
-            },
-            searchController: colorSearchController, // controller for search input
-            hintText: 'اختر اللون', // the hint text
-            isDropdownOpen: isColorDropdownOpen, // whether the dropdown is open
-            onTap: () {
-              setState(() {
-                isColorDropdownOpen = !isColorDropdownOpen;
-                if (isColorDropdownOpen) {
-                  // Close other dropdowns
-                  isBrandDropdownOpen = false;
-                  isModelDropdownOpen = false;
-                  isGearDropdownOpen = false;
-                  isFuelDropdownOpen = false;
-                  isVehicleTypeDropdownOpen = false;
-                }
-              });
-            },
-            refresh: () => setState(() {}), // refresh UI when search text changes
-          ), SizedBox(height: 20.h),
-
-            /// FUEL DROPDOWN
+            /// FUEL
             dropdownLabel('نوع الوقود'),
-            SizedBox(height: 8.h),
-        searchableDropdown(
-          items: fuelTypes, // list of fuel types
-          selectedValue: selectedFuel, // currently selected fuel
-          onSelected: (String value) {
-            setState(() {
-              selectedFuel = value; // update selected fuel
-              isFuelDropdownOpen = false; // close dropdown
-              fuelSearchController.clear(); // clear search
-            });
-          },
-          searchController: fuelSearchController, // search controller
-          hintText: 'اختر نوع الوقود', // hint text
-          isDropdownOpen: isFuelDropdownOpen, // dropdown open state
-          onTap: () {
-            setState(() {
-              isFuelDropdownOpen = !isFuelDropdownOpen; // toggle dropdown
-              if (isFuelDropdownOpen) {
-                // close other dropdowns
-                isBrandDropdownOpen = false;
-                isModelDropdownOpen = false;
-                isGearDropdownOpen = false;
-                isColorDropdownOpen = false;
-                isVehicleTypeDropdownOpen = false;
-              }
-            });
-          },
-          refresh: () => setState(() {}), // refresh UI when typing in search
-        )
-        ,SizedBox(height: 20.h),
+            searchableDropdown(
+              items: fuelTypeController.fuelTypes,
+              selectedValue: selectedFuel,
+              onSelected: (value) {
+                setState(() {
+                  selectedFuel = value;
+                  isFuelDropdownOpen = false;
+                });
+              },
+              searchController: fuelSearchController,
+              hintText: 'اختر نوع الوقود',
+              isDropdownOpen: isFuelDropdownOpen,
+              onTap: () =>
+                  setState(() => isFuelDropdownOpen = !isFuelDropdownOpen),
+              refresh: () => setState(() {}),
+            ),
+            SizedBox(height: 20.h),
 
-            /// NUMBER OF SEATS
+
+            /// status
+            dropdownLabel('الحالة'),
+            searchableDropdown(
+              items: statusController.statusList,
+              selectedValue: selectedStatus,
+              onSelected: (value) {
+                setState(() {
+                  selectedStatus = value;
+                  isStatusDropdownOpen = false;
+                });
+              },
+              searchController: fuelSearchController,
+              hintText: 'فعالة - غير فعالة',
+              isDropdownOpen: isStatusDropdownOpen,
+              onTap: () =>
+                  setState(() => isStatusDropdownOpen = !isStatusDropdownOpen),
+              refresh: () => setState(() {}),
+            ),
+            SizedBox(height: 20.h),
+
+
+
+            /// REGISTRATION NUMBER
+            dropdownLabel('رقم التسجيل'),
+            TextFormField(
+              controller: registrationNumberController,
+              style: TextStyle(fontSize: 14.sp),
+              decoration: _inputDecoration('مثال: 123-ABC'),
+            ),
+            SizedBox(height: 20.h),
+
+            /// SEATS
             dropdownLabel('عدد المقاعد'),
-            SizedBox(height: 8.h),
-            _seatsField(),
+            TextFormField(
+              controller: seatsController,
+              keyboardType: TextInputType.number,
+              style: TextStyle(fontSize: 14.sp),
+              decoration: _inputDecoration('مثال: 5'),
+            ),
             SizedBox(height: 20.h),
 
-            /// PRICE FIELD
+            /// Doors
+            dropdownLabel('عدد الأبواب'),
+            TextFormField(
+              controller: doorsController,
+              keyboardType: TextInputType.number,
+              style: TextStyle(fontSize: 14.sp),
+              decoration: _inputDecoration('مثال: 4'),
+            ),
+            SizedBox(height: 20.h),
+
+            /// PRICE
             dropdownLabel('السعر بالساعة'),
-            SizedBox(height: 8.h),
-            _priceField(),
+            TextFormField(
+              controller: priceController,
+              keyboardType: TextInputType.number,
+              style: TextStyle(fontSize: 14.sp),
+              decoration: _inputDecoration('مثال: 50'),
+            ),
             SizedBox(height: 20.h),
 
-            /// DESCRIPTION FIELD - NEW TEXTFIELD
+            /// DESCRIPTION
             dropdownLabel('وصف المركبة'),
-            SizedBox(height: 8.h),
-            _descriptionField(),
+            TextFormField(
+              controller: descriptionController,
+              maxLines: 4,
+              style: TextStyle(fontSize: 14.sp),
+              decoration: _inputDecoration('أدخل وصف المركبة'),
+            ),
             SizedBox(height: 20.h),
 
-            /// IMAGE PICKER
-            dropdownLabel('تحميل صورة المركبة'),
-            SizedBox(height: 8.h),
-            _imagePickerField(),
-            SizedBox(height: 40.h),
-
-            /// SAVE BUTTON
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: _saveVehicle,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: RColors.primary,
-                  padding: EdgeInsets.symmetric(vertical: 14.h),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12.r),
+            /// IMAGE
+            dropdownLabel('صورة المركبة'),
+            GestureDetector(
+              onTap: pickImage,
+              child: AbsorbPointer(
+                child: TextFormField(
+                  controller: imageController,
+                  style: TextStyle(fontSize: 14.sp),
+                  decoration: _inputDecoration('اختر صورة المركبة').copyWith(
+                    prefixIcon: Icon(
+                      Icons.add_circle_outline,
+                      size: 22.sp,
+                      color: Theme.of(context).primaryColor,
+                    ),
                   ),
-                ),
-                child: Text(
-                  'اضافة',
-                  style: TextStyle(fontSize: 18.sp, color: Colors.white),
                 ),
               ),
             ),
-            SizedBox(height: 30.h),
+            SizedBox(height: 40.h),
+
+            /// BUTTON
+            SizedBox(
+              height: 50.h,
+              child: ElevatedButton(
+                onPressed: _saveVehicle,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Theme.of(context).primaryColor,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(14.r),
+                  ),
+                  elevation: 0,
+                ),
+                child: Text(
+                  'إضافة المركبة',
+                  style: TextStyle(
+                    fontSize: 16.sp,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ),
           ],
         ),
       ),
     );
   }
 
-  void _saveVehicle() {
-    if (selectedBrand != null &&
-        selectedModel != null &&
-        selectedGear != null &&
-        selectedColor != null &&
-        selectedFuel != null &&
-        selectedVehicleType != null &&
-        seatsController.text.isNotEmpty &&
-        priceController.text.isNotEmpty &&
-        descriptionController.text.isNotEmpty && // Check description field
-        selectedImagePath != null) {
+  void _saveVehicle() async {
+    if (selectedVehicleType == null ||
+        selectedBrandId == null ||
+        selectedModelId == null ||
+        selectedGear == null ||
+        selectedColor == null ||
+        selectedFuel == null ||
+        selectedStatus == null ||
+        registrationNumberController.text.isEmpty ||
+        seatsController.text.isEmpty ||
+        doorsController.text.isEmpty ||
+        priceController.text.isEmpty ||
+        descriptionController.text.isEmpty ||
+        selectedImagePath == null) {
       Get.snackbar(
-        "نجاح",
-        "تم إضافة: $selectedBrand $selectedModel",
-        backgroundColor: RColors.primary,
+        'خطأ',
+        'الرجاء ملء جميع الحقول',
+        snackPosition: SnackPosition.TOP,
+        backgroundColor: Colors.red,
         colorText: Colors.white,
-        margin: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
-        duration: const Duration(seconds: 2),
-        borderRadius: 12,
-        snackPosition: SnackPosition.BOTTOM,
       );
-    } else {
+      return;
+    }
+
+    final vehicle = CreateVehicleModel(
+      modelId: selectedModelId!,
+      transmission: selectedGear!,
+      color: selectedColor!,
+      fuelType: selectedFuel!,
+      status: selectedStatus!,
+      registrationNumber: registrationNumberController.text.trim(),
+      seats: int.parse(seatsController.text.trim()),
+      doors: int.parse(doorsController.text.trim()),
+      pricePerHour: double.parse(priceController.text.trim()),
+      description: descriptionController.text.trim(),
+      images: [File(selectedImagePath!)],
+    );
+
+    final success = await addNewVehicleController.addNewVehicle(vehicle);
+
+    if (success) {
       Get.snackbar(
-        "تنبيه",
-        "الرجاء ملء جميع الحقول",
-        backgroundColor: RColors.primary,
+        'تمت الاضافة !',
+        'تم اضافة المركبة بنجاح',
+        snackPosition: SnackPosition.TOP,
+        backgroundColor: Colors.green,
         colorText: Colors.white,
-        margin: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
-        duration: const Duration(seconds: 2),
-        borderRadius: 12,
-        snackPosition: SnackPosition.BOTTOM,
       );
+
+      /// Return success to previous screen
+      Get.back(result: true);
     }
   }
 
-  /// AppBar Leading Button
-  Widget _leadingButton() {
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(50),
-        border: Border.all(width: 1.w, color: RColors.grey),
-      ),
-      margin: EdgeInsets.only(right: 5.w),
-      child: IconButton(
-        onPressed: () => Get.back(),
-        icon: const Icon(CupertinoIcons.left_chevron),
-        color: RColors.darkerGrey,
-      ),
-    );
-  }
 
-  /// AppBar Title
-  Widget _title() {
-    return Text(
-      'إضافة مركبة جديدة',
-      style: TextStyle(
-        fontSize: 20.sp,
-        fontWeight: FontWeight.bold,
-        color: RColors.primary,
-      ),
-    );
-  }
+  Widget _leadingButton() => IconButton(
+    icon: const Icon(CupertinoIcons.left_chevron),
+    onPressed: () => Get.back(),
+  );
 
-
-  /// NUMBER OF SEATS
-  Widget _seatsField() {
-    return TextFormField(
-      controller: seatsController,
-      keyboardType: TextInputType.number,
-      decoration: _inputDecoration().copyWith(
-        hintText: 'مثال: 5',
-      ),
-      style: TextStyle(fontSize: 16.sp),
-    );
-  }
-
-  /// PRICE FIELD
-  Widget _priceField() {
-    return TextFormField(
-      controller: priceController,
-      keyboardType: TextInputType.number,
-      decoration: _inputDecoration().copyWith(hintText: 'مثال: 30'),
-      style: TextStyle(fontSize: 16.sp),
-    );
-  }
-
-  /// DESCRIPTION FIELD - NEW TEXTFIELD
-  Widget _descriptionField() {
-    return TextFormField(
-      controller: descriptionController,
-      keyboardType: TextInputType.multiline,
-      maxLines: 4, // Multiple lines for description
-      decoration: _inputDecoration().copyWith(
-        hintText: 'أدخل وصف المركبة...',
-        alignLabelWithHint: true,
-      ),
-      style: TextStyle(fontSize: 16.sp),
-    );
-  }
-
-  /// IMAGE PICKER FIELD
-  Widget _imagePickerField() {
-    return GestureDetector(
-      onTap: pickImage,
-      child: AbsorbPointer(
-        child: TextFormField(
-          controller: imageController,
-          decoration: _inputDecoration().copyWith(
-            hintText: 'اختر صورة',
-            suffixIcon: Icon(Icons.add, color: RColors.primary),
-          ),
-        ),
-      ),
-    );
-  }
-
-  /// INPUT DECORATION
-  InputDecoration _inputDecoration() {
-    return InputDecoration(
-      contentPadding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 14.h),
-      border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(12.r),
-        borderSide: BorderSide(color: RColors.grey),
-      ),
-      enabledBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(12.r),
-        borderSide: BorderSide(color: RColors.grey),
-      ),
-      focusedBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(12.r),
-        borderSide: BorderSide(color: RColors.primary),
-      ),
-    );
-  }
+  Widget _title() =>
+      Text('إضافة مركبة جديدة', style: TextStyle(fontSize: 20.sp));
 }

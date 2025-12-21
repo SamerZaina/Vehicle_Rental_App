@@ -90,7 +90,7 @@ class VehicleItemCard extends StatelessWidget {
                       child: Text(
                         rating,
                         style: TextStyle(
-                          fontSize: 16.sp,
+                          fontSize: 14.sp,
                           color: dark ? RColors.white : RColors.textPrimary,
                         ),
                         maxLines: 1,
