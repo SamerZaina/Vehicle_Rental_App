@@ -35,15 +35,15 @@ class VehicleItemCard extends StatelessWidget {
         color: dark ? RColors.darkGrey : RColors.white,
         borderRadius: BorderRadius.circular(16.r),
         border: Border.all(
-          color: Colors.grey.withOpacity(0.3), // **Border**
+          color: Colors.grey.withOpacity(0.3),
           width: 1,
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.08), // **Shadow color**
-            blurRadius: 6, // spread
+            color: Colors.transparent,
+            blurRadius: 6,
             spreadRadius: 1,
-            offset: const Offset(0, 3), // shadow position
+            offset: const Offset(0, 3),
           ),
         ],
       ),
@@ -52,17 +52,8 @@ class VehicleItemCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           /// VEHICLE IMAGE
-          Container(
-            height: 90.h,
-            width: 100.w,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(12.r),
-              image: DecorationImage(
-                image: AssetImage(image),
-                fit: BoxFit.cover,
-              ),
-            ),
-          ),
+          _buildVehicleImage(image),
+
           SizedBox(width: RSizes.lg.w),
 
           /// TEXT DETAILS
@@ -90,14 +81,13 @@ class VehicleItemCard extends StatelessWidget {
                       child: Text(
                         rating,
                         style: TextStyle(
-                          fontSize: 16.sp,
+                          fontSize: 14.sp,
                           color: dark ? RColors.white : RColors.textPrimary,
                         ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
                     ),
-
                   ],
                 ),
                 SizedBox(height: 6.h),
@@ -167,5 +157,96 @@ class VehicleItemCard extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  /// Helper method to build vehicle image with error handling
+  Widget _buildVehicleImage(String imagePath) {
+    // Check if it's a network image
+    final isNetworkImage = imagePath.startsWith('http://') ||
+        imagePath.startsWith('https://');
+
+    if (isNetworkImage) {
+      return Container(
+        height: 90.h,
+        width: 100.w,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(12.r),
+          color: Colors.transparent,
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(12.r),
+          child: Image.network(
+            imagePath,
+            fit: BoxFit.cover,
+            loadingBuilder: (context, child, loadingProgress) {
+              if (loadingProgress == null) return child;
+              return Center(
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                  valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
+                ),
+              );
+            },
+            errorBuilder: (context, error, stackTrace) {
+              // If network image fails, show placeholder based on vehicle name
+              return _buildPlaceholderImage(name);
+            },
+          ),
+        ),
+      );
+    } else {
+      // It's a local asset image
+      return Container(
+        height: 90.h,
+        width: 100.w,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(12.r),
+          image: DecorationImage(
+            image: AssetImage(imagePath),
+            fit: BoxFit.cover,
+          ),
+        ),
+      );
+    }
+  }
+
+  /// Build placeholder image when network image fails
+  Widget _buildPlaceholderImage(String vehicleName) {
+    return Container(
+      color: Colors.transparent,
+      child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              _getVehicleIcon(vehicleName),
+              size: 40,
+              color: RColors.secondary,
+            ),
+            SizedBox(height: 4),
+            Text(
+              'صورة المركبة',
+              style: TextStyle(
+                fontSize: 10,
+                color: RColors.secondary,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  /// Get appropriate icon based on vehicle name
+  IconData _getVehicleIcon(String vehicleName) {
+    if (vehicleName.toLowerCase().contains('باص') ||
+        vehicleName.toLowerCase().contains('bus')) {
+      return Icons.directions_bus;
+    } else if (vehicleName.toLowerCase().contains('دراجة') ||
+        vehicleName.toLowerCase().contains('motorcycle')) {
+      return Icons.motorcycle;
+    } else {
+      return Icons.directions_car;
+    }
   }
 }

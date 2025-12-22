@@ -18,6 +18,8 @@ class RImages {
   static const String car2= "assets/images/cars/car2.png";
   static const String car3= "assets/images/cars/car3.png";
   static const String car4= "assets/images/cars/car4.png";
+  static const String bus= "assets/images/cars/bus.png";
+  static const String motorcycle= "assets/images/cars/motorcycle.png";
 
 
 

@@ -59,10 +59,10 @@ class _LoginScreenState extends State<LoginScreen> {
                       RTexts.loginWelcome,
                       style: Theme.of(context).textTheme.headlineMedium!
                           .copyWith(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 30,
-                            color: dark ? RColors.primary40 : RColors.primary,
-                          ),
+                        fontWeight: FontWeight.bold,
+                        fontSize: 30,
+                        color: dark ? RColors.primary40 : RColors.primary,
+                      ),
                     ),
                   ),
                   SizedBox(height: RSizes.spaceBtwSections.h * 1.6),
@@ -79,7 +79,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                         // Password Field
                         Obx(
-                          () => LoginTextFields(
+                              () => LoginTextFields(
                             controller: controller.passwordController,
                             hintText: RTexts.loginPassword,
                             icon: CupertinoIcons.lock,
@@ -91,7 +91,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                     : CupertinoIcons.eye,
                               ),
                               onPressed: () => controller.hidePassword.value =
-                                  !controller.hidePassword.value,
+                              !controller.hidePassword.value,
                               color: RColors.grey,
                             ),
                             validator: (value) =>
@@ -107,7 +107,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     child: Row(
                       children: [
                         Obx(
-                          () => Checkbox(
+                              () => Checkbox(
                             checkColor: RColors.light,
                             activeColor: RColors.primary40,
                             side: BorderSide(
@@ -116,7 +116,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                             value: controller.rememberMe.value,
                             onChanged: (value) => controller.rememberMe.value =
-                                !controller.rememberMe.value,
+                            !controller.rememberMe.value,
                           ),
                         ),
                         Text(

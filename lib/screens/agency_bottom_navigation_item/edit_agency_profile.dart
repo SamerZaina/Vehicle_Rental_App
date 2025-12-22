@@ -38,15 +38,15 @@ class _EditAgencyProfileState extends State<EditAgencyProfile> {
     return Scaffold(
       appBar: dark
           ? RAppbarTheme.darkAppBarTheme(
-              leadingWidth: 62.w,
-              leading: _leadingButton(),
-              title: _title(context),
-            )
+        leadingWidth: 62.w,
+        leading: _leadingButton(),
+        title: _title(context),
+      )
           : RAppbarTheme.lightAppBarTheme(
-              leadingWidth: 62.w,
-              leading: _leadingButton(),
-              title: _title(context),
-            ),
+        leadingWidth: 62.w,
+        leading: _leadingButton(),
+        title: _title(context),
+      ),
 
       body: SafeArea(
         child: Form(
@@ -59,7 +59,7 @@ class _EditAgencyProfileState extends State<EditAgencyProfile> {
 
               // Avatar
               Obx(
-                () => Column(
+                    () => Column(
                   children: [
                     SizedBox(
                       height: 120,
@@ -67,7 +67,7 @@ class _EditAgencyProfileState extends State<EditAgencyProfile> {
                       child: CircleAvatar(
                         backgroundColor: RColors.primary40,
                         backgroundImage:
-                            controller.profileImageUrl.value.isNotEmpty
+                        controller.profileImageUrl.value.isNotEmpty
                             ? NetworkImage(controller.profileImageUrl.value)
                             : AssetImage(RImages.user),
                       ),

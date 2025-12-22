@@ -72,7 +72,7 @@ class _AgencyProfileState extends State<AgencyProfile> {
                 // Avatar
                 Center(
                   child: Obx(
-                    () => SizedBox(
+                        () => SizedBox(
                       height: 120,
                       width: 100,
                       child: CircleAvatar(
@@ -180,11 +180,11 @@ class _AgencyProfileState extends State<AgencyProfile> {
   }
 
   Widget _infoTile(
-    IconData icon,
-    String title,
-    String value, {
-    Color? valueColor,
-  }) {
+      IconData icon,
+      String title,
+      String value, {
+        Color? valueColor,
+      }) {
     Color? kIconColor;
     return ListTile(
       leading: Icon(icon, color: kIconColor, size: 26.r),

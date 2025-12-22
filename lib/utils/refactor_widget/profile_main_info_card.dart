@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:vehicle_rental_app/utils/constants/colors.dart';
-Widget mainInfoCard(bool status) {
+Widget mainInfoCard(String phoneNumber ,String licenseNumber, bool status) {
    const Color kIconColor = Color(0xFF767676);
 
   return Container(
@@ -13,9 +13,9 @@ Widget mainInfoCard(bool status) {
     ),
     child: Column(
       children: [
-        _infoTile(Icons.phone_outlined, "رقم الهاتف", "+970 599 123 456"),
+        _infoTile(Icons.phone_outlined, "رقم الهاتف", phoneNumber),
         _divider(),
-        _infoTile(Icons.credit_card_outlined, "رخصة الوكالة", "AG123456789"),
+        _infoTile(Icons.credit_card_outlined, "رخصة الوكالة",licenseNumber),
         _divider(),
         _infoTile(
           Icons.verified_user_outlined,
