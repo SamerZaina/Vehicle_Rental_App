@@ -1,7 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';
+import 'package:vehicle_rental_app/data/controllers/user/user_controller.dart';
 import 'package:vehicle_rental_app/screens/login/forget_password.dart';
 import 'package:vehicle_rental_app/utils/constants/image_strings.dart';
 import 'package:vehicle_rental_app/utils/constants/sizes.dart';
@@ -55,10 +57,12 @@ class _HomeState extends State<Home> {
             width: 40.w,
             height: 40.h,
             margin: EdgeInsets.fromLTRB(15, 0, 0, 0),
-            child: CircleAvatar(
-              backgroundColor: RColors.primary40,
-              radius: 30.r,
-              child: Image.asset('assets/images/women.png'),
+            child: Obx( () => CircleAvatar(
+                  backgroundColor: RColors.primary40,
+                  backgroundImage: UserController.instance.profileImageUrl.value.isNotEmpty
+                      ? NetworkImage(UserController.instance.profileImageUrl.value)
+                      : AssetImage(RImages.user)
+              ),
             ),
           ) ,
           Container(
@@ -85,10 +89,12 @@ class _HomeState extends State<Home> {
               width: 40.w,
               height: 40.h,
               margin: EdgeInsets.fromLTRB(15, 0, 0, 0),
-              child: CircleAvatar(
-                backgroundColor: RColors.primary40,
-                radius: 30.r,
-                child: Image.asset('assets/images/women.png'),
+              child:  Obx( () => CircleAvatar(
+                  backgroundColor: RColors.primary40,
+                  backgroundImage: UserController.instance.profileImageUrl.value.isNotEmpty
+                      ? NetworkImage(UserController.instance.profileImageUrl.value)
+                      : AssetImage(RImages.user)
+              ),
               ),
             ) ,
             Container(

@@ -6,7 +6,6 @@ import 'package:vehicle_rental_app/utils/constants/colors.dart';
 import 'package:vehicle_rental_app/utils/theme/theme.dart';
 import 'package:vehicle_rental_app/utils/theme/theme_manager.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:vehicle_rental_app/widgets/navigation_menu.dart';
 class App extends StatelessWidget {
   const App({super.key});
 

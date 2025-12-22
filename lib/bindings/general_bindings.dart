@@ -9,6 +9,5 @@ class GeneralBindings extends Bindings{
     Get.put(NetworkManager());
     Get.put(AuthenticationRepository());
     Get.put(UserController());
-
   }
 }

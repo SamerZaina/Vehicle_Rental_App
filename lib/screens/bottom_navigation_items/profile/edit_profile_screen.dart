@@ -43,7 +43,8 @@ class _EditProfileState extends State<EditProfile> {
           margin: EdgeInsets.fromLTRB(0, 0, 5, 0),
           child: IconButton(
             onPressed: () => Get.back(),
-            color: RColors.darkerGrey, icon: Icon(CupertinoIcons.left_chevron),
+            color: RColors.darkerGrey,
+            icon: Icon(CupertinoIcons.left_chevron),
           ),
         ),
         title: Text('تعديل الملف الشخصي' ,
@@ -55,7 +56,8 @@ class _EditProfileState extends State<EditProfile> {
               fontWeight: FontWeight.bold
           ),),
 
-    ) : RAppbarTheme.lightAppBarTheme(
+    )
+            : RAppbarTheme.lightAppBarTheme(
     leadingWidth: 62.w,
     leading: Container(
     decoration: BoxDecoration(
@@ -84,7 +86,8 @@ class _EditProfileState extends State<EditProfile> {
     children: [
     const SizedBox(height: 20),
       // Avatar
-      Obx( () => Column(
+      Obx( () =>
+          Column(
         children: [
           SizedBox(
             height: 120,
