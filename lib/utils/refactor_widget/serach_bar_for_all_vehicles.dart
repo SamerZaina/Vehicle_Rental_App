@@ -3,8 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'dart:async';
-
-import '../../controller/agency_all_vehicles_controller.dart';
+import '../../agency/controller/agency_all_vehicles_controller.dart';
 import '../constants/colors.dart';
 import '../constants/sizes.dart';
 import '../constants/text_strings.dart';

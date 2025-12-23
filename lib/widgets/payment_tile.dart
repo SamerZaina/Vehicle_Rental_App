@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
-import '../screens/bottom_navigation_items/payment/PaymentMethodModel.dart';
-import '../screens/bottom_navigation_items/payment/checkout_controller.dart';
+import '../customer/bottom_navigation_items/payment/PaymentMethodModel.dart';
+import '../customer/bottom_navigation_items/payment/checkout_controller.dart';
 import '../utils/constants/colors.dart';
 
 class TPaymentTile extends StatelessWidget{

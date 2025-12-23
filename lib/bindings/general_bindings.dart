@@ -1,6 +1,6 @@
 import 'package:get/get.dart';
-import 'package:vehicle_rental_app/data/controllers/user/user_controller.dart';
-import '../data/repositories/authentication/authentication_repository.dart';
+import '../customer/data/controllers/user/user_controller.dart';
+import '../customer/data/repositories/authentication/authentication_repository.dart';
 import '../utils/network/network_manager.dart';
 
 class GeneralBindings extends Bindings{

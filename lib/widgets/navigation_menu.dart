@@ -3,11 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';
-import 'package:vehicle_rental_app/screens/bottom_navigation_items/home_screen.dart';
-import 'package:vehicle_rental_app/screens/bottom_navigation_items/profile/profile_screen.dart';
-import 'package:vehicle_rental_app/screens/bottom_navigation_items/wish_list.dart';
+import 'package:vehicle_rental_app/customer/bottom_navigation_items/home_screen.dart';
 import 'package:vehicle_rental_app/utils/constants/sizes.dart';
-import '../screens/bottom_navigation_items/agencies/agancies_screen.dart';
+import '../customer/bottom_navigation_items/agencies/agancies_screen.dart';
+import '../customer/bottom_navigation_items/profile/profile_screen.dart';
+import '../customer/bottom_navigation_items/wish_list.dart';
 import '../utils/constants/colors.dart';
 
 

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:vehicle_rental_app/data/repositories/authentication/authentication_repository.dart';
 import 'package:vehicle_rental_app/utils/constants/colors.dart';
 
+import '../../customer/data/repositories/authentication/authentication_repository.dart';
 import '../../screens/login/login_screen.dart';
 void showLogoutDialog(BuildContext context) {
   showDialog(

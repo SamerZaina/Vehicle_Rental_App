@@ -4,11 +4,11 @@ import 'package:get/get_core/src/get_main.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:vehicle_rental_app/utils/theme/theme_manager.dart';
 
+import 'agency/api_service/api_service.dart';
 import 'app.dart';
 import 'app_start_controller.dart';
 import 'core/api_constants.dart';
 import 'core/dio_client.dart';
-import 'api_service/api_service.dart'; // <- Make sure this import exists
 
 void main() async {
   /// Widgets Binding
@@ -21,7 +21,7 @@ void main() async {
   //final token = GetStorage().read('token');
 
   //final token = await getTokenFromStorage();
-  final token = "65|A1Wqzu0pnIM7RBRPgEKLXaOOeHl9nIvAAQlkuvPqae553877";
+  final token = "120|1XisZ8j6kOTk3oHDHgLiQCGTERMcclJ9lz5s3dom07c9a402";
 
   /// Initialize ApiService (solution to late initialization error)
   /// so this line needed to insilize dio befor use controller .

@@ -3,7 +3,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:vehicle_rental_app/core/api_constants.dart';
-import 'package:vehicle_rental_app/data/repositories/authentication/authentication_repository.dart';
+import '../customer/data/repositories/authentication/authentication_repository.dart';
 import '../screens/login/login_screen.dart';
 
 class DioClient {
@@ -33,7 +33,7 @@ class DioClient {
           }
           return handler.next(options);
         },
-        onError: (e , handler) async{
+   /* onError: (e , handler) async{
           final is401 = e.response?.statusCode == 401;
           if(!is401) return handler.next(e);
 
@@ -59,7 +59,7 @@ class DioClient {
             return handler.next(e);
           }
 
-        }
+        }*/
       ),
     );
 

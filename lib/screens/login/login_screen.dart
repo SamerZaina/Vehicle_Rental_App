@@ -2,10 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:vehicle_rental_app/data/controllers/login/login_controller.dart';
-import 'package:vehicle_rental_app/screens/agency_bottom_navigation_item/bottom_navigation.dart';
-import 'package:vehicle_rental_app/screens/bottom_navigation_items/home_screen.dart';
-import 'package:vehicle_rental_app/screens/bottom_navigation_items/profile/profile_screen.dart';
 import 'package:vehicle_rental_app/screens/login/forget_password.dart';
 import 'package:vehicle_rental_app/screens/register/register_screen.dart';
 import 'package:vehicle_rental_app/utils/constants/colors.dart';
@@ -15,6 +11,7 @@ import 'package:vehicle_rental_app/widgets/divider_social_login.dart';
 import 'package:vehicle_rental_app/widgets/login_text_fields.dart';
 import 'package:vehicle_rental_app/widgets/navigation_menu.dart';
 
+import '../../customer/data/controllers/login/login_controller.dart';
 import '../../utils/constants/sizes.dart';
 import '../../utils/constants/text_strings.dart';
 import '../../widgets/RAppbar.dart';
