@@ -1,5 +1,6 @@
+
 import 'package:get/get.dart';
-import '../../api_service/api_service.dart';
+import '../../../core/dio_client.dart';
 import '../../model/add_new_vehicle_modles/brand_modle_modle.dart';
 
 
@@ -24,7 +25,7 @@ class VehicleModelController extends GetxController {
       }
 
       // API call
-      final response = await ApiService().dio.get('/agency/cars/get/$vehicleType/$brandId');
+      final response = await DioClient.dio.get('/agency/cars/get/$vehicleType/$brandId');
 
       final modelResponse = VehicleModelResponse.fromJson(response.data);
 
@@ -51,3 +52,4 @@ class VehicleModelController extends GetxController {
     models.clear();
   }
 }
+

@@ -8,8 +8,6 @@ import 'package:file_picker/file_picker.dart';
 import 'package:vehicle_rental_app/utils/helpers/helper_functions.dart';
 import 'package:vehicle_rental_app/utils/refactor_widget/drop_down_addvheicle_screen.dart';
 import 'package:vehicle_rental_app/utils/refactor_widget/drop_down_label.dart';
-
-import '../../utils/constants/image_strings.dart';
 import '../../widgets/RAppbar.dart';
 import '../controller/add_new_vehicle/brand_controller.dart';
 import '../controller/add_new_vehicle/brand_modle_controller.dart';
@@ -485,7 +483,7 @@ class _AddNewVehicleState extends State<AddNewVehicle> {
 
       final success = await addNewVehicleController.addNewVehicle(vehicle);
 
-      if (success) {
+      if (success != null) {
         // Success snackbar
         Get.snackbar(
           'تمت الاضافة !',

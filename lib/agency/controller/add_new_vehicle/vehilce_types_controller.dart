@@ -1,11 +1,13 @@
+
 import 'package:dio/dio.dart';
 import 'package:get/get.dart';
-import '../../api_service/api_service.dart';
+
+import '../../../core/dio_client.dart';
 import '../../model/add_new_vehicle_modles/vehicle_types_model.dart';
 
 
 class VehicleTypeController extends GetxController {
-  final ApiService apiService = ApiService() ;
+  final Dio _dio = DioClient.dio ;
 
   final RxBool isLoading = false.obs;
   final RxString errorMessage = ''.obs;
@@ -26,7 +28,7 @@ class VehicleTypeController extends GetxController {
       isLoading.value = true;
       errorMessage.value = '';
 
-      final response = await apiService.dio.get(carTypesUrl);
+      final response = await _dio.get(carTypesUrl);
 
       final carTypeResponse =
       VehicleTypeResponse.fromJson(response.data);

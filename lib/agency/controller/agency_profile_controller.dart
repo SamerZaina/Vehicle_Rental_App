@@ -1,7 +1,8 @@
+
 import 'package:dio/dio.dart';
 import 'package:get/get.dart';
+import 'package:vehicle_rental_app/core/dio_client.dart';
 
-import '../api_service/api_service.dart';
 import '../model/agency_profile_model.dart';
 import '../model/agency_profile_response.dart';
 
@@ -21,7 +22,7 @@ class AgencyProfileModelController extends GetxController {
 
   // Endpoint (relative to baseUrl)
   final String profileUrl = '/agency/profile';
-  ApiService apiService = ApiService();
+  Dio _dio = DioClient.dio ;
 
   @override
   void onInit() {
@@ -35,7 +36,7 @@ class AgencyProfileModelController extends GetxController {
       isLoading.value = true;
       errorMessage.value = '';
 
-      final response = await apiService.dio.get(profileUrl);
+      final response = await _dio.get(profileUrl);
 
       final profileResponse =
       AgencyProfileResponse.fromJson(response.data);
@@ -68,7 +69,7 @@ class AgencyProfileModelController extends GetxController {
       isLoading.value = true;
       errorMessage.value = '';
 
-      final response = await apiService.dio.put(
+      final response = await _dio.put(
         profileUrl,
         data: {
           "agency_name": agencyName,
