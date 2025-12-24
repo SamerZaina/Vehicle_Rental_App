@@ -24,7 +24,7 @@ class _BottomNavigationState extends State<BottomNavigation> {
     "الملف الشخصي",
   ];
 
-  final List<Widget> _pages = const [
+  final List<Widget> _pages =  [
     Home(),
     MyVehicle(),
     CurrentRentalVehicle(),
