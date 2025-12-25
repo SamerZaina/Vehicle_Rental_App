@@ -5,20 +5,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:vehicle_rental_app/agency/controller/agency_home_controller.dart';
 import 'package:vehicle_rental_app/utils/helpers/helper_functions.dart';
 import 'package:vehicle_rental_app/utils/refactor_widget/drop_down_addvheicle_screen.dart';
 import 'package:vehicle_rental_app/utils/refactor_widget/drop_down_label.dart';
-
-import '../../utils/constants/image_strings.dart';
 import '../../widgets/RAppbar.dart';
-import '../controller/add_new_vehicle/brand_controller.dart';
-import '../controller/add_new_vehicle/brand_modle_controller.dart';
-import '../controller/add_new_vehicle/create_new_vehilce_controller.dart';
-import '../controller/add_new_vehicle/fuel_type_controller.dart';
-import '../controller/add_new_vehicle/status_controller.dart';
-import '../controller/add_new_vehicle/transmission_controller.dart';
-import '../controller/add_new_vehicle/vehicle_color_controller.dart';
-import '../controller/add_new_vehicle/vehilce_types_controller.dart';
+import '../controller/add_new_vehicle_Controllers/brand_controller.dart';
+import '../controller/add_new_vehicle_Controllers/brand_modle_controller.dart';
+import '../controller/add_new_vehicle_Controllers/create_new_vehilce_controller.dart';
+import '../controller/add_new_vehicle_Controllers/fuel_type_controller.dart';
+import '../controller/add_new_vehicle_Controllers/status_controller.dart';
+import '../controller/add_new_vehicle_Controllers/transmission_controller.dart';
+import '../controller/add_new_vehicle_Controllers/vehicle_color_controller.dart';
+import '../controller/add_new_vehicle_Controllers/vehilce_types_controller.dart';
 import '../controller/agency_all_vehicles_controller.dart';
 import '../model/add_new_vehicle_modles/create_new_vehicle_model.dart';
 
@@ -81,6 +80,8 @@ class _AddNewVehicleState extends State<AddNewVehicle> {
   Get.put(VehicleStatusController());
   final AgencyCarsController agencyCarsController =
   Get.put(AgencyCarsController());
+  final HomeController homeController =
+  Get.put(HomeController());
 
   bool isVehicleTypeDropdownOpen = false;
   bool isBrandDropdownOpen = false;
@@ -485,7 +486,7 @@ class _AddNewVehicleState extends State<AddNewVehicle> {
 
       final success = await addNewVehicleController.addNewVehicle(vehicle);
 
-      if (success) {
+      if (success != null) {
         // Success snackbar
         Get.snackbar(
           'تمت الاضافة !',
@@ -497,9 +498,11 @@ class _AddNewVehicleState extends State<AddNewVehicle> {
           icon: Icon(Icons.check_circle, color: Colors.white),
         );
 
-        // here we make get request to add the vehicle which we already added
-        // to myVehicle list of the agency
-        agencyCarsController.fetchAgencyCars();
+        // // here we make get request to add the vehicle which we already added
+        // // to myVehicle list of the agency
+        // agencyCarsController.fetchAgencyCars();
+        // homeController.fetchHomeData();
+
         // Wait a bit before going back to show the snackbar
         await Future.delayed(Duration(milliseconds: 1500));
 

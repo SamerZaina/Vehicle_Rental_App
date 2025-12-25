@@ -1,6 +1,6 @@
-import 'package:get/get.dart';
 
-import '../../api_service/api_service.dart';
+import 'package:get/get.dart';
+import '../../../core/dio_client.dart';
 import '../../model/add_new_vehicle_modles/brand_model.dart';
 
 
@@ -23,7 +23,7 @@ class BrandController extends GetxController {
       }
 
       // API call
-      final response = await ApiService().dio.get('/agency/cars/get/$carType');
+      final response = await DioClient.dio.get('/agency/cars/get/$carType');
 
       final model = BrandResponseModel.fromJson(response.data);
 

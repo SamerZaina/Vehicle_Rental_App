@@ -1,9 +1,11 @@
+
+import 'package:dio/dio.dart';
 import 'package:get/get.dart';
-import '../../api_service/api_service.dart';
+import 'package:vehicle_rental_app/core/dio_client.dart';
 import '../../model/add_new_vehicle_modles/status_model.dart';
 
 class VehicleStatusController extends GetxController {
-  final apiService = ApiService();
+  final Dio _dio  = DioClient.dio ;
 
   var isLoading = false.obs;
   final RxList<String> statusList = <String>[].obs;
@@ -12,7 +14,7 @@ class VehicleStatusController extends GetxController {
     try {
       isLoading.value = true;
 
-      final response = await apiService.dio.get(
+      final response = await _dio.get(
         '/agency/cars/getStatus',
       );
 

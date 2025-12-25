@@ -1,11 +1,12 @@
+
 import 'package:dio/dio.dart';
 import 'package:get/get.dart';
-import '../../api_service/api_service.dart';
+import 'package:vehicle_rental_app/core/dio_client.dart';
 import '../../model/add_new_vehicle_modles/transmission_type_model.dart';
 
 
 class TransmissionController extends GetxController {
-  final Dio _dio = ApiService().dio;
+  final Dio _dio = DioClient.dio;
 
   final RxBool isLoading = false.obs;
   final RxString errorMessage = ''.obs;

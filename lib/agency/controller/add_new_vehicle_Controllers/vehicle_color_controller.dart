@@ -1,11 +1,12 @@
 
+import 'package:dio/dio.dart';
 import 'package:get/get.dart';
-import '../../api_service/api_service.dart';
+import 'package:vehicle_rental_app/core/dio_client.dart';
 import '../../model/add_new_vehicle_modles/vehicle_color_model.dart';
 
 class VehicleColorController extends GetxController {
   // here the dio from api service class
-  final ApiService _apiService = ApiService();
+  final Dio _dio = DioClient.dio ;
 
   final RxBool isLoading = false.obs;
   final RxList<String> colors = <String>[].obs;
@@ -22,7 +23,7 @@ class VehicleColorController extends GetxController {
     try {
       isLoading.value = true;
 
-      final response = await _apiService.dio.get(colorsUrl);
+      final response = await _dio.get(colorsUrl);
 
       final model = VehicleColorResponse.fromJson(response.data);
 

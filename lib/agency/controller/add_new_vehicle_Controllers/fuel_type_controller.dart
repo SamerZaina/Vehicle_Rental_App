@@ -1,9 +1,12 @@
+
+import 'package:dio/dio.dart';
 import 'package:get/get.dart';
-import '../../api_service/api_service.dart';
+
+import '../../../core/dio_client.dart';
 import '../../model/add_new_vehicle_modles/fuel_type_model.dart';
 
 class FuelTypeController extends GetxController {
-  final apiService = ApiService();
+  final Dio _dio = DioClient.dio;
 
   var isLoading = false.obs;
   final RxList<String> fuelTypes = <String>[].obs;
@@ -12,7 +15,7 @@ class FuelTypeController extends GetxController {
     try {
       isLoading.value = true;
 
-      final response = await apiService.dio.get(
+      final response = await _dio.get(
         '/agency/cars/getFuelType',
       );
 
@@ -37,3 +40,5 @@ class FuelTypeController extends GetxController {
     getFuelTypes();
   }
 }
+
+
