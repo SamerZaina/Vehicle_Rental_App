@@ -10,9 +10,11 @@ class ApiConstants {
   static const String login = '/login';
   static const String refreshToken = '/refresh-token';
 
+
   // Customer endpoints
   static const String customerProfile = '/customer/profile';
   static const String fetchAgencies = '/customer/agencies';
+  static const String fetchCar = '/customer/cars/';
 
 
 

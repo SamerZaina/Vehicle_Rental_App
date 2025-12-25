@@ -104,7 +104,8 @@ class _WishListState extends State<WishList> {
                                       Container(
                                         margin: EdgeInsets.fromLTRB(0, 15,10,0) ,
                                         child: GestureDetector(
-                                          onTap: ()=> Get.to(AganciesItems()),
+                                          onTap: () {
+                                          },
                                           child: Card(
                                             shadowColor: RColors.primary,
                                             color:dark ? RColors.darkGrey : Colors.grey,

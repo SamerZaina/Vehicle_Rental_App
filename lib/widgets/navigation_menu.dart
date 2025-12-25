@@ -120,7 +120,7 @@ class NavigationMenu extends StatelessWidget {
 
 class NavigationController extends GetxController {
   final Rx<int> selectedIndex = 0.obs;
-  final screens = [Home(), WishList(), Container(), AganciesScreen(),Profile()];
+  final screens = [Home(), WishList(), Container(), AgenciesScreen(),Profile()];
 
   void changePage(int index) {
     selectedIndex.value = index;

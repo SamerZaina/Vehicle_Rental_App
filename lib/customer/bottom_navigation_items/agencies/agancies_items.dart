@@ -3,117 +3,38 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
+import 'package:vehicle_rental_app/customer/data/models/user/agency_model.dart';
+import 'package:vehicle_rental_app/customer/data/shop/controllers/agency_controller.dart';
 import 'package:vehicle_rental_app/utils/helpers/helper_functions.dart';
 
 import '../../../utils/constants/colors.dart';
 import '../../../utils/constants/image_strings.dart';
 import '../../../widgets/RAppbar.dart';
+import '../../../widgets/Rshimmer.dart';
 import '../../../widgets/car_card.dart';
-import '../../../widgets/search_bar.dart';
 import '../details/details_page.dart';
 
 class AganciesItems extends StatefulWidget {
-  const AganciesItems({super.key});
+  const AganciesItems({super.key, required this.agency});
+
+  final AgencyModel agency;
 
   @override
   State<AganciesItems> createState() => _AganciesItemsState();
 }
 
 class _AganciesItemsState extends State<AganciesItems> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+    AgencyController.instance.fetchVehicles(id: widget.agency.id);
+  });
+  }
 
   @override
   Widget build(BuildContext context) {
-    final List<Map<String, dynamic>> cars = [
-      {
-        "image": RImages.car1,
-        "name": "فيراري",
-        "rating": "5.0",
-        "location": "غزة",
-        "seats": "4 مقاعد",
-        "price": "\$200/اليوم",
-      },
-      {
-        "image": RImages.car2,
-        "name": "تسلا موديل 5",
-        "rating": "5.0",
-        "location": "غزة",
-        "seats": "5 مقاعد",
-        "price": "\$100/اليوم",
-      },
-      {
-        "image": RImages.car2,
-        "name": "تسلا موديل 5",
-        "rating": "5.0",
-        "location": "غزة",
-        "seats": "5 مقاعد",
-        "price": "\$100/اليوم",
-      },
-      {
-        "image": RImages.car2,
-        "name": "تسلا موديل 5",
-        "rating": "5.0",
-        "location": "غزة",
-        "seats": "5 مقاعد",
-        "price": "\$100/اليوم",
-      },   {
-        "image": RImages.car2,
-        "name": "تسلا موديل 5",
-        "rating": "5.0",
-        "location": "غزة",
-        "seats": "5 مقاعد",
-        "price": "\$100/اليوم",
-      },   {
-        "image": RImages.car2,
-        "name": "تسلا موديل 5",
-        "rating": "5.0",
-        "location": "غزة",
-        "seats": "5 مقاعد",
-        "price": "\$100/اليوم",
-      },   {
-        "image": RImages.car2,
-        "name": "تسلا موديل 5",
-        "rating": "5.0",
-        "location": "غزة",
-        "seats": "5 مقاعد",
-        "price": "\$100/اليوم",
-      },   {
-        "image": RImages.car2,
-        "name": "تسلا موديل 5",
-        "rating": "5.0",
-        "location": "غزة",
-        "seats": "5 مقاعد",
-        "price": "\$100/اليوم",
-      },   {
-        "image": RImages.car2,
-        "name": "تسلا موديل 5",
-        "rating": "5.0",
-        "location": "غزة",
-        "seats": "5 مقاعد",
-        "price": "\$100/اليوم",
-      },   {
-        "image": RImages.car2,
-        "name": "تسلا موديل 5",
-        "rating": "5.0",
-        "location": "غزة",
-        "seats": "5 مقاعد",
-        "price": "\$100/اليوم",
-      },   {
-        "image": RImages.car2,
-        "name": "تسلا موديل 5",
-        "rating": "5.0",
-        "location": "غزة",
-        "seats": "5 مقاعد",
-        "price": "\$100/اليوم",
-      },
-      {
-        "image": RImages.car2,
-        "name": "تسلا موديل 5",
-        "rating": "5.0",
-        "location": "غزة",
-        "seats": "5 مقاعد",
-        "price": "\$100/اليوم",
-      },
-    ];
+    final agencyController = AgencyController.instance;
     final dark = RHelperFunctions.isDarkMode(context);
     return Scaffold(
       appBar: dark ?RAppbarTheme.darkAppBarTheme(
@@ -132,7 +53,7 @@ class _AganciesItemsState extends State<AganciesItems> {
               color: RColors.darkerGrey, icon:Icon( CupertinoIcons.left_chevron),
             ),
           ) ,
-          title: Text('اسم المعرض' ,
+          title: Text(widget.agency.agencyName ,
             style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                 fontWeight: FontWeight.bold
             ),),
@@ -171,7 +92,7 @@ class _AganciesItemsState extends State<AganciesItems> {
               color: RColors.darkerGrey, icon:Icon( CupertinoIcons.left_chevron),
             ),
           ) ,
-          title: Text('اسم المعرض' ,
+          title: Text(widget.agency.agencyName  ,
             style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                 fontSize:20.sp,
                 fontWeight: FontWeight.bold
@@ -203,7 +124,18 @@ class _AganciesItemsState extends State<AganciesItems> {
         scrollDirection: Axis.vertical,
         child: Column(
           children: [
-            GridView.builder(
+          Obx((){
+            if(agencyController.isLoading.value){
+              return RShimmerEffect(height: 190, width: double.infinity);
+            }
+            if(agencyController.error.value.isNotEmpty){
+              return Center(child: Text(agencyController.error.value));
+            }
+            if(!agencyController.agencyVehicles.isNotEmpty){
+              return Center(child: Text('لا يوجد بيانات للعرض'),);
+            }
+            final vehicles = agencyController.agencyVehicles;
+             return GridView.builder(
               shrinkWrap: true,
               physics: NeverScrollableScrollPhysics(),
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
@@ -213,26 +145,29 @@ class _AganciesItemsState extends State<AganciesItems> {
                 crossAxisSpacing: 15.w,
               ),
                    scrollDirection: Axis.vertical,
-              itemCount: cars.length,
+              itemCount: vehicles.length,
               padding: const EdgeInsets.symmetric(horizontal:10),
               itemBuilder: (context, index) {
-                final car = cars[index];
+                final vehicle = vehicles[index];
                 return  GestureDetector(
                   onTap: ()=> Get.to(DetailsPage()),
                   child: SizedBox(
                       height: 280.h,
                       child: CarCardBookButton(
-                    image: car["image"]??'',
-                    name: car["name"]??'',
-                    rating: car["rating"]??'',
-                    location: car["location"]??'',
-                    seats: car["seats"]??'',
-                    price: car["price"]??'',
-                  ), ),
+                    image: RImages.car1,
+                    name: vehicle["brand"]??'',
+                    rating: vehicle["reviews_avg_rating"]??'',
+                    location: widget.agency.address,
+                    seats: vehicle["model"]??'',
+                    price: vehicle["price_per_hour"]??'',
+                  ),
+                  ),
                 );
               },
+            );
+              }
 
-            ),
+            )
           ],
         ),
       ),

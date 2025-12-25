@@ -21,10 +21,10 @@ void main() async {
   //final token = GetStorage().read('token');
 
   //final token = await getTokenFromStorage();
-  final token = "120|1XisZ8j6kOTk3oHDHgLiQCGTERMcclJ9lz5s3dom07c9a402";
+  final token = "132|px5EvAVByLsvtAfNeaOdykltR2zDZflunz9YRRN52c9f7daf";
 
   /// Initialize ApiService (solution to late initialization error)
-  /// so this line needed to insilize dio befor use controller .
+  /// so this line needed to insilize dio befor use controller.
   ApiService().init(token: token);
 
   // here we set the token from postman , only for test .
