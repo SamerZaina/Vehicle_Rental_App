@@ -1,7 +1,7 @@
 # 🚗 Vehicle Rental Flutter App - Rento App
 
 ## 📌 Project Overview
-* **General View**
+
   ![Admin Dashboard](assets/mockups/general_view.png)
 This project implements a **cross-platform Vehicle Rental Mobile Application (MVP)** using **Flutter, GetX, and Dio**.
 The app allows **customers** to browse and book vehicles, **agencies** to manage their fleet, and **administrators** to supervise operations via a Laravel-based web dashboard.
@@ -151,7 +151,7 @@ Vehicle_Rental_App/
   ![Customer Home](assets/mockups/customer_home.png)
 
 * **Agency Dashboard**
-  ![Agency Dashboard](assets/mockups/agency_dashboard.png)
+  ![Agency Vehicles](assets/mockups/agency_vehicles.png)
 
 * **Booking Flow**
   ![Booking Flow](assets/mockups/booking_flow.png)
