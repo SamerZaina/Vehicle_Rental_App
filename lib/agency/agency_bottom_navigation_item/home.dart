@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:vehicle_rental_app/agency/controller/agency_all_vehicles_controller.dart';
 
 import 'package:vehicle_rental_app/utils/constants/colors.dart';
 import 'package:vehicle_rental_app/utils/constants/image_strings.dart';
@@ -17,10 +18,12 @@ class Home extends StatelessWidget {
   Widget build(BuildContext context) {
     final dark = RHelperFunctions.isDarkMode(context);
 
-    // Use the correct controller
+    final AgencyCarsController agencyCarsController = Get.put(AgencyCarsController());
+    agencyCarsController.refreshData();
     final HomeController controller = Get.put(HomeController());
-
+    controller.fetchHomeData();
     return Obx(() {
+
       // Loading state
       if (controller.isLoading.value) {
         return const Center(child: CircularProgressIndicator());
@@ -38,47 +41,43 @@ class Home extends StatelessWidget {
         );
       }
 
-      return RefreshIndicator(
-        onRefresh: () async {
-          await controller.fetchHomeData();
-        },
-        child: SingleChildScrollView(
-          physics: const AlwaysScrollableScrollPhysics(),
-          child: Column(
-            children: [
-              SizedBox(height: RSizes.md.h),
+      return SingleChildScrollView(
+        physics: const AlwaysScrollableScrollPhysics(),
+        child: Column(
+          children: [
+            SizedBox(height: RSizes.md.h),
 
-              _sectionHeader(
-                context,
-                title: "المركبات الأعلى تقييماً",
-                dark: dark,
-              ),
-              _carList(controller.bestRatingCars, context),
+            _sectionHeader(
+              context,
+              title: "المركبات الأعلى تقييماً",
+              dark: dark,
+            ),
+            _carList(controller.bestRatingCars, context),
 
-              _sectionHeader(
-                context,
-                title: "المركبات المضافة حديثا",
-                dark: dark,
-              ),
-              _carList(controller.recentAddedCars, context),
+            _sectionHeader(
+              context,
+              title: "المركبات المضافة حديثا",
+              dark: dark,
+            ),
+            _carList(controller.recentAddedCars, context),
 
-              _sectionHeader(
-                context,
-                title: "مركبات مميزة",
-                dark: dark,
-              ),
-              _carList(controller.featuredCars, context),
+            _sectionHeader(
+              context,
+              title: "مركبات مميزة",
+              dark: dark,
+            ),
+            _carList(controller.featuredCars, context),
 
-              SizedBox(height: RSizes.md.h),
-              const SizedBox(height: 100),
-            ],
-          ),
+            SizedBox(height: RSizes.md.h),
+            const SizedBox(height: 100),
+          ],
         ),
       );
     });
   }
 
   Widget _sectionHeader(
+
       BuildContext context, {
         required String title,
         required bool dark,
@@ -206,3 +205,4 @@ class Home extends StatelessWidget {
     return rate.toString();
   }
 }
+

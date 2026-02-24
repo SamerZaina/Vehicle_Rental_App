@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -19,18 +20,19 @@ class MyVehicle extends StatelessWidget {
   Widget build(BuildContext context) {
     final dark = RHelperFunctions.isDarkMode(context);
 
-    /// ✅ Controller is created once
+    ///  Controller is created once
     final AgencyCarsController controller = Get.put(AgencyCarsController());
+    controller.refreshData();
 
     return Scaffold(
       backgroundColor: dark ? RColors.black : RColors.white,
 
-      /// ➕ ADD VEHICLE
+      /// ➕ ADD VEHICLE Button
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
           final result = await Get.to(() => const AddNewVehicle());
 
-          /// ✅ Refresh list after successful add AND show success message
+          /// Refresh list after successful add AND show success message
           if (result == true) {
             // Show success message
             Get.snackbar(
@@ -178,6 +180,7 @@ class MyVehicle extends StatelessWidget {
 
                 /// GET CURRENT VEHICLES (FILTERED OR ALL)
                 final currentVehicles = controller.vehicles;
+                controller.fetchAgencyCars();
 
                 /// EMPTY (NO VEHICLES)
                 if (currentVehicles.isEmpty) {
@@ -222,74 +225,69 @@ class MyVehicle extends StatelessWidget {
                 }
 
                 /// SUCCESS - SHOW VEHICLES
-                return RefreshIndicator(
-                  onRefresh: () async {
-                    await controller.refreshData();
-                  },
-                  child: ListView.builder(
-                    itemCount: currentVehicles.length,
-                    padding: EdgeInsets.only(bottom: 100.h),
-                    itemBuilder: (context, index) {
-                      try {
-                        final vehicle = currentVehicles[index];
+                return ListView.builder(
+                  itemCount: currentVehicles.length,
+                  padding: EdgeInsets.only(bottom: 100.h),
+                  itemBuilder: (context, index) {
+                    try {
+                      final vehicle = currentVehicles[index];
 
-                        // Safely extract all values with null checks
-                        final brandName = vehicle.model.brand?.name ?? 'Unknown';
-                        final modelName = vehicle.model.name;
-                        final vehicleType = vehicle.model.brand?.type ?? 'سيارة';
-                        final rating = vehicle.rate;
-                        final seats = vehicle.seats;
-                        final price = vehicle.pricePerHour;
-                        final status = vehicle.status;
-                        final fullName = '$brandName $modelName';
+                      // Safely extract all values with null checks
+                      final brandName = vehicle.model.brand?.name ?? 'Unknown';
+                      final modelName = vehicle.model.name;
+                      final vehicleType = vehicle.model.brand?.type ?? 'سيارة';
+                      final rating = vehicle.rate;
+                      final seats = vehicle.seats;
+                      final price = vehicle.pricePerHour;
+                      final status = vehicle.status;
+                      final fullName = '$brandName $modelName';
 
-                        // Get appropriate image URL
-                        String imageUrl = _getVehicleImage(
-                          imagesPaths: vehicle.imagesPaths,
-                          vehicleType: vehicleType,
-                        );
+                      // Get appropriate image URL
+                      String imageUrl = _getVehicleImage(
+                        imagesPaths: vehicle.imagesPaths,
+                        vehicleType: vehicleType,
+                      );
 
-                        return Padding(
-                          padding: EdgeInsets.only(bottom: 12.h),
-                          child: VehicleItemCard(
-                            image: imageUrl,
-                            name: fullName,
-                            rating: _vehicleRate(rating),
-                            seats: '$seats مقاعد ',
-                            price: '$price / ساعة',
-                            status: status == 'available' ? 'نشطة' : 'غير نشطة',
+                      return Padding(
+                        padding: EdgeInsets.only(bottom: 12.h),
+                        child: VehicleItemCard(
+                          image: imageUrl,
+                          name: fullName,
+                          rating: _vehicleRate(rating),
+                          seats: '$seats مقاعد ',
+                          price: '$price / ساعة',
+                          status: status == 'available' ? 'نشطة' : 'غير نشطة',
+                        ),
+                      );
+                    } catch (e, stackTrace) {
+                      // If there's an error rendering a vehicle, show error card
+                      print('Error rendering vehicle at index $index: $e');
+                      print('Stack trace: $stackTrace');
+                      return Padding(
+                        padding: EdgeInsets.only(bottom: 12.h),
+                        child: Container(
+                          padding: EdgeInsets.all(16.w),
+                          decoration: BoxDecoration(
+                            color: Colors.red.shade50,
+                            borderRadius: BorderRadius.circular(8.w),
+                            border: Border.all(color: Colors.red.shade200),
                           ),
-                        );
-                      } catch (e, stackTrace) {
-                        // If there's an error rendering a vehicle, show error card
-                        print('Error rendering vehicle at index $index: $e');
-                        print('Stack trace: $stackTrace');
-                        return Padding(
-                          padding: EdgeInsets.only(bottom: 12.h),
-                          child: Container(
-                            padding: EdgeInsets.all(16.w),
-                            decoration: BoxDecoration(
-                              color: Colors.red.shade50,
-                              borderRadius: BorderRadius.circular(8.w),
-                              border: Border.all(color: Colors.red.shade200),
-                            ),
-                            child: Row(
-                              children: [
-                                Icon(Icons.error_outline, color: Colors.red),
-                                SizedBox(width: 8.w),
-                                Expanded(
-                                  child: Text(
-                                    'Error loading vehicle data',
-                                    style: TextStyle(color: Colors.red),
-                                  ),
+                          child: Row(
+                            children: [
+                              Icon(Icons.error_outline, color: Colors.red),
+                              SizedBox(width: 8.w),
+                              Expanded(
+                                child: Text(
+                                  'Error loading vehicle data',
+                                  style: TextStyle(color: Colors.red),
                                 ),
-                              ],
-                            ),
+                              ),
+                            ],
                           ),
-                        );
-                      }
-                    },
-                  ),
+                        ),
+                      );
+                    }
+                  },
                 );
               }),
             ),
@@ -353,7 +351,7 @@ class MyVehicle extends StatelessWidget {
     // ["cars\/cbxpvrAjUE4WzQiYmeB9gGut2PzeYiMLd8bK7Npy.jpg"]
     // so below the solution
     final cleanPath = rawPath
-        .replaceAll('\\/', '/') // 🔥 THIS IS THE KEY FIX
+        .replaceAll('\\/', '/')
         .replaceAll('"', '')
         .trim();
 
