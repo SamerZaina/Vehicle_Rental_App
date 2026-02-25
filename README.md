@@ -192,11 +192,14 @@ It is **not purely for educational purposes**, and is intended to demonstrate fu
 
 ## 👤 Author
 
-Samer Abu Zaina
+Samer Abu Zaina - 
 Flutter & Mobile Developer
 
-Roaa Abu Foul
+Roaa Abu Foul - 
 Flutter & Mobile Developer
+
+ALBaraa ALSaiqali - 
+Backend Web Developer
 
 ---
 
