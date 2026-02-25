@@ -33,7 +33,7 @@ The system supports **multi-role access, secure authentication, dynamic themes, 
 
 * **Frontend:** Flutter, Dart
 * **Backend:** Laravel PHP
-* **Database:** MySQL
+* **Database:** PostegreSQL
 * **State Management:** GetX
 * **Networking / API Calls:** Dio
 * **Authentication:** Email verification, OAuth (Google/Facebook)
@@ -202,6 +202,21 @@ ALBaraa ALSaiqali -
 Backend Web Developer
 
 ---
+
+## 🔗 Backend Repository
+
+The backend system for this MVP is developed using **Laravel** and is available here:
+
+👉 [Rento Car Rental Backend](https://github.com/ALBaraa2/Rento--Car-rental-backend)
+
+The backend handles:
+
+* Authentication & authorization  
+* User and agency approval system  
+* Vehicle management (CRUD operations)  
+* Booking management  
+* Admin dashboard operations  
+* Database management (PostegreSQL)  
 
 ## ⭐ License
 
