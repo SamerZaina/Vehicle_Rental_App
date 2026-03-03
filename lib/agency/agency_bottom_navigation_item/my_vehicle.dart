@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -22,7 +21,7 @@ class MyVehicle extends StatelessWidget {
 
     ///  Controller is created once
     final AgencyCarsController controller = Get.put(AgencyCarsController());
-    controller.refreshData();
+
 
     return Scaffold(
       backgroundColor: dark ? RColors.black : RColors.white,
@@ -180,7 +179,7 @@ class MyVehicle extends StatelessWidget {
 
                 /// GET CURRENT VEHICLES (FILTERED OR ALL)
                 final currentVehicles = controller.vehicles;
-                controller.fetchAgencyCars();
+
 
                 /// EMPTY (NO VEHICLES)
                 if (currentVehicles.isEmpty) {

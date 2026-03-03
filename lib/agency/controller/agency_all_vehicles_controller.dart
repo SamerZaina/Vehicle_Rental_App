@@ -26,6 +26,8 @@ class AgencyCarsController extends GetxController {
   static const String carsUrl = '/agency/cars';
   static const String searchUrl = '/agency/cars/search';
 
+
+
   @override
   void onInit() {
     super.onInit();
